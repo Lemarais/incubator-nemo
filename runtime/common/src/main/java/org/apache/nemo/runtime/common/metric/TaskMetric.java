@@ -34,6 +34,11 @@ public class TaskMetric implements StateMetric<TaskState.State> {
   private String containerId = "";
   private int scheduleAttempt = -1;
   private List<StateTransitionEvent<TaskState.State>> stateTransitionEvents = new ArrayList<>();
+  private List<VertexExecution> vertexExecution = new ArrayList<>();
+  private long startFetch = -1;
+  private long endFetch = -1;
+  private long startFinalize = -1;
+  private long endFinialize = -1;
   private long taskDuration = -1;
   private long taskCPUTime = -1;
   private long schedulingOverhead = -1;
@@ -93,6 +98,46 @@ public class TaskMetric implements StateMetric<TaskState.State> {
 
   private void addEvent(final StateTransitionEvent<TaskState.State> event) {
     stateTransitionEvents.add(event);
+  }
+
+  public final List<VertexExecution> getVertexExecution() {
+    return vertexExecution;
+  }
+
+  private void addVertexExecution(final VertexExecution vertex) {
+    vertexExecution.add(vertex);
+  }
+
+  public final long getEndFetch() {
+    return endFetch;
+  }
+
+  private void setEndFetch(final long timestamp) {
+    this.endFetch = timestamp;
+  }
+
+  public final long getStartFetch() {
+    return startFetch;
+  }
+
+  private void setStartFetch(final long timestamp) {
+    this.startFetch = timestamp;
+  }
+
+  public final long getEndFinalize() {
+    return endFinialize;
+  }
+
+  private void setEndFinalize(final long timestamp) {
+    this.endFinialize = timestamp;
+  }
+
+  public final long getStartFinalize() {
+    return startFinalize;
+  }
+
+  private void setStartFinalize(final long timestamp) {
+    this.startFinalize = timestamp;
   }
 
   /**
@@ -261,6 +306,23 @@ public class TaskMetric implements StateMetric<TaskState.State> {
   public final boolean processMetricMessage(final String metricField, final byte[] metricValue) {
     LOG.debug("metric {} has just arrived!", metricField);
     switch (metricField) {
+      case "vertexExecution":
+        final VertexExecution newVertexExecution =
+          SerializationUtils.deserialize(metricValue);
+        addVertexExecution(newVertexExecution);
+        break;
+      case "startFinalize":
+        setStartFinalize(SerializationUtils.deserialize(metricValue));
+        break;
+      case "endFinalize":
+        setEndFinalize(SerializationUtils.deserialize(metricValue));
+        break;
+      case "startFetch":
+        setStartFetch(SerializationUtils.deserialize(metricValue));
+        break;
+      case "endFetch":
+        setEndFetch(SerializationUtils.deserialize(metricValue));
+        break;
       case "taskDuration":
         setTaskDuration(SerializationUtils.deserialize(metricValue));
         break;

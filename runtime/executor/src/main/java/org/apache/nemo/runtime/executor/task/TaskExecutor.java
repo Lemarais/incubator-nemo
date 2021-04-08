@@ -39,6 +39,8 @@ import org.apache.nemo.runtime.common.RuntimeIdManager;
 import org.apache.nemo.runtime.common.comm.ControlMessage;
 import org.apache.nemo.runtime.common.message.MessageEnvironment;
 import org.apache.nemo.runtime.common.message.PersistentConnectionToMasterMap;
+import org.apache.nemo.runtime.common.metric.StateTransitionEvent;
+import org.apache.nemo.runtime.common.metric.VertexExecution;
 import org.apache.nemo.runtime.common.plan.RuntimeEdge;
 import org.apache.nemo.runtime.common.plan.StageEdge;
 import org.apache.nemo.runtime.common.plan.Task;
@@ -347,9 +349,16 @@ public final class TaskExecutor {
       SerializationUtils.serialize(executionStartTime - timeSinceLastExecution));
 
     // Phase 1: Consume task-external input data.
+
+    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
+      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
+        null, TaskState.State.START_FETCH)));
     if (!handleDataFetchers(dataFetchers)) {
       return;
     }
+    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
+      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
+        null, TaskState.State.END_FETCH)));
 
     metricMessageSender.send(TASK_METRIC_ID, taskId, "boundedSourceReadTime",
       SerializationUtils.serialize(boundedSourceReadTime));
@@ -359,9 +368,15 @@ public final class TaskExecutor {
       SerializationUtils.serialize(encodedReadBytes));
 
     // Phase 2: Finalize task-internal states and elements
+    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
+      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
+        null, TaskState.State.START_FINALIZE)));
     for (final VertexHarness vertexHarness : sortedHarnesses) {
       finalizeVertex(vertexHarness);
     }
+    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
+      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
+        null, TaskState.State.END_FINALIZE)));
 
     metricMessageSender.send(TASK_METRIC_ID, taskId, "taskDuration",
       SerializationUtils.serialize(System.currentTimeMillis() - executionStartTime));

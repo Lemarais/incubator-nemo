@@ -76,6 +76,10 @@ public final class TaskState {
   public enum State {
     READY,
     EXECUTING,
+    START_FETCH,
+    END_FETCH,
+    START_FINALIZE,
+    END_FINALIZE,
     ON_HOLD, // for dynamic optimization
     COMPLETE,
     SHOULD_RETRY,
