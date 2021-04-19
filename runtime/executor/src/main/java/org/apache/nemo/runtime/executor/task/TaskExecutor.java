@@ -373,11 +373,11 @@ public final class TaskExecutor {
         null, TaskState.State.START_FINALIZE)));
     for (final VertexHarness vertexHarness : sortedHarnesses) {
       metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
-        SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
+        SerializationUtils.serialize(new VertexExecution(System.currentTimeMillis(),
           TaskState.State.START_FINALIZE.toString(), vertexHarness.getIRVertex().getId())));
       finalizeVertex(vertexHarness);
       metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
-        SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
+        SerializationUtils.serialize(new VertexExecution(System.currentTimeMillis(),
           TaskState.State.END_FINALIZE.toString(), vertexHarness.getIRVertex().getId())));
     }
     metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
