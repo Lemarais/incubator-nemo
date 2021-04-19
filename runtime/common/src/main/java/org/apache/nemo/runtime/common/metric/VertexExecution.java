@@ -23,13 +23,11 @@ package org.apache.nemo.runtime.common.metric;
  *
  */
 public final class VertexExecution extends Event {
-  private final String taskId;
   private final String vertexName;
   private final String eventType;
 
-  public VertexExecution(final long timestamp, final String eventType, final String vertexName, final String taskId) {
+  public VertexExecution(final long timestamp, final String eventType, final String vertexName) {
     super(timestamp);
-    this.taskId = taskId;
     this.vertexName = vertexName;
     this.eventType = eventType;
   }
@@ -50,14 +48,5 @@ public final class VertexExecution extends Event {
    */
   public String getVertexName() {
     return vertexName;
-  }
-
-  /**
-   * Get new state.
-   *
-   * @return new state.
-   */
-  public String getTaskId() {
-    return taskId;
   }
 }
