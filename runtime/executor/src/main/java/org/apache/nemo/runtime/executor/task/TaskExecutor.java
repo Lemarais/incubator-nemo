@@ -353,6 +353,11 @@ public final class TaskExecutor {
     metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
       SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
         null, TaskState.State.START_FETCH)));
+
+    metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
+      SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
+        TaskState.State.START_FETCH.toString(), "")));
+
     if (!handleDataFetchers(dataFetchers)) {
       return;
     }
@@ -373,7 +378,7 @@ public final class TaskExecutor {
         null, TaskState.State.START_FINALIZE)));
     for (final VertexHarness vertexHarness : sortedHarnesses) {
       metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
-        SerializationUtils.serialize(new VertexExecution(System.currentTimeMillis(),
+        SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
           TaskState.State.START_FINALIZE.toString(), vertexHarness.getIRVertex().getId())));
       finalizeVertex(vertexHarness);
       metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
@@ -482,12 +487,18 @@ public final class TaskExecutor {
           final Object element = dataFetcher.fetchDataElement();
           onEventFromDataFetcher(element, dataFetcher);
           if (element instanceof Finishmark) {
+            metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
+              SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
+                TaskState.State.END_FETCH.toString(), dataFetcher.getDataSource().getId())));
             availableIterator.remove();
           }
         } catch (final NoSuchElementException e) {
           // No element in current data fetcher, fetch data from next fetcher
           // move current data fetcher to pending.
           availableIterator.remove();
+          metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
+            SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
+              TaskState.State.PENDING_FETCH.toString(), dataFetcher.getDataSource().getId())));
           pendingFetchers.add(dataFetcher);
         } catch (final IOException e) {
           // IOException means that this task should be retried.
