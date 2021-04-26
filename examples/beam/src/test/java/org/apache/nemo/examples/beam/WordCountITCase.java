@@ -52,7 +52,8 @@ public final class WordCountITCase {
   public void setUp() throws Exception {
     builder = new ArgBuilder()
       .addUserMain(WordCount.class.getCanonicalName())
-      .addUserArgs(inputFilePath, outputFilePath);
+      .addUserArgs(inputFilePath, outputFilePath)
+      .addDAGDirectory("/home/ubuntu/dag");
   }
 
   @After

@@ -46,7 +46,8 @@ public final class MultinomialLogisticRegressionITCase {
   public void setUp() throws Exception {
     builder = new ArgBuilder()
       .addUserMain(MultinomialLogisticRegression.class.getCanonicalName())
-      .addUserArgs(input, numFeatures, numClasses, numIteration);
+      .addUserArgs(input, numFeatures, numClasses, numIteration)
+      .addDAGDirectory("/home/ubuntu/dag");
   }
 
   @Test(timeout = ExampleTestArgs.TIMEOUT, expected = Test.None.class)

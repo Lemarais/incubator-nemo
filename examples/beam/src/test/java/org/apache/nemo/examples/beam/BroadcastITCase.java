@@ -51,7 +51,8 @@ public final class BroadcastITCase {
     builder = new ArgBuilder()
       .addUserMain(Broadcast.class.getCanonicalName())
       .addUserArgs(inputFilePath, outputFilePath)
-      .addResourceJson(executorResourceFileName);
+      .addResourceJson(executorResourceFileName)
+      .addDAGDirectory("/home/ubuntu/dag");
   }
 
   @After

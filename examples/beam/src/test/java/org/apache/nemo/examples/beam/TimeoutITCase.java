@@ -50,7 +50,8 @@ public class TimeoutITCase {
   public void setUp() throws Exception {
     builder = new ArgBuilder()
       .addUserMain(WordCountTimeOut1Sec.class.getCanonicalName())
-      .addUserArgs(inputFilePath, outputFilePath);
+      .addUserArgs(inputFilePath, outputFilePath)
+      .addDAGDirectory("/home/ubuntu/dag");
   }
 
   @Test(timeout = ExampleTestArgs.TIMEOUT, expected = OutputMismatchException.class)

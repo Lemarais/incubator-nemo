@@ -54,7 +54,8 @@ public final class WindowedWordCountITCase {
   public void testBatchFixedWindow() throws Exception {
     builder = new ArgBuilder()
       .addUserMain(WindowedWordCount.class.getCanonicalName())
-      .addUserArgs(outputFilePath, "fixed", INPUT_TYPE_BOUNDED, inputFilePath);
+      .addUserArgs(outputFilePath, "fixed", INPUT_TYPE_BOUNDED, inputFilePath)
+      .addDAGDirectory("/home/ubuntu/dag");
 
     JobLauncher.main(builder
       .addResourceJson(executorResourceFileName)

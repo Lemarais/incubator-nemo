@@ -50,7 +50,8 @@ public final class PerPercentileAverageITCase {
     builder = new ArgBuilder()
       .addResourceJson(executorResourceFileName)
       .addUserMain(PerPercentileAverage.class.getCanonicalName())
-      .addUserArgs(inputFilePath, outputFilePath);
+      .addUserArgs(inputFilePath, outputFilePath)
+      .addDAGDirectory("/home/ubuntu/dag");
   }
 
   @After

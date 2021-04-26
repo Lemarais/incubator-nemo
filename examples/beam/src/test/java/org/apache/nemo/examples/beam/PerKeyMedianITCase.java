@@ -51,7 +51,8 @@ public final class PerKeyMedianITCase {
     builder = new ArgBuilder()
       .addResourceJson(executorResourceFileName)
       .addUserMain(PerKeyMedian.class.getCanonicalName())
-      .addUserArgs(inputFilePath, outputFilePath);
+      .addUserArgs(inputFilePath, outputFilePath)
+      .addDAGDirectory("/home/ubuntu/dag");
   }
 
   @After

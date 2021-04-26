@@ -53,7 +53,8 @@ public final class AlternatingLeastSquareITCase {
   public void setUp() throws Exception {
     builder = new ArgBuilder()
       .addUserMain(AlternatingLeastSquare.class.getCanonicalName())
-      .addUserArgs(input, numFeatures, numIteration, lambda, output);
+      .addUserArgs(input, numFeatures, numIteration, lambda, output)
+      .addDAGDirectory("/home/ubuntu/dag");
   }
 
   @After

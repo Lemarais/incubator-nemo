@@ -48,7 +48,8 @@ public final class BeamSimpleSumSQLITCase {
     builder = new ArgBuilder()
       .addUserMain(SimpleSumSQL.class.getCanonicalName())
       .addUserArgs(outputFilePath)
-      .addResourceJson(executorResourceFileName);
+      .addResourceJson(executorResourceFileName)
+      .addDAGDirectory("/home/ubuntu/dag");
   }
 
   @After

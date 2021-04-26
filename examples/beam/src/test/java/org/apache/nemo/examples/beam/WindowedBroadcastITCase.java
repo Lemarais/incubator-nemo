@@ -50,7 +50,8 @@ public final class WindowedBroadcastITCase {
     builder = new ArgBuilder()
       .addScheduler("org.apache.nemo.runtime.master.scheduler.StreamingScheduler")
       .addUserMain(WindowedBroadcast.class.getCanonicalName())
-      .addUserArgs(outputFilePath);
+      .addUserArgs(outputFilePath)
+      .addDAGDirectory("/home/ubuntu/dag");
 
     JobLauncher.main(builder
       .addResourceJson(executorResourceFileName)

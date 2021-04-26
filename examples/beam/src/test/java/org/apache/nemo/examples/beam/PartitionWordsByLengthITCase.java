@@ -50,7 +50,8 @@ public final class PartitionWordsByLengthITCase {
   public void setUp() throws Exception {
     builder = new ArgBuilder()
       .addUserMain(PartitionWordsByLength.class.getCanonicalName())
-      .addUserArgs(inputFilePath, outputFilePath);
+      .addUserArgs(inputFilePath, outputFilePath)
+      .addDAGDirectory("/home/ubuntu/dag");
   }
 
   @After

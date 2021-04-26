@@ -52,7 +52,8 @@ public final class NetworkTraceAnalysisITCase {
     builder = new ArgBuilder()
       .addResourceJson(executorResourceFileName)
       .addUserMain(NetworkTraceAnalysis.class.getCanonicalName())
-      .addUserArgs(inputFilePath0, inputFilePath1, outputFilePath);
+      .addUserArgs(inputFilePath0, inputFilePath1, outputFilePath)
+      .addDAGDirectory("/home/ubuntu/dag");
   }
 
   @After
