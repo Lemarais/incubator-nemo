@@ -19,17 +19,31 @@
 package org.apache.nemo.examples.beam;
 
 import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.metrics.Counter;
+import org.apache.beam.sdk.metrics.Distribution;
+import org.apache.beam.sdk.metrics.Metrics;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.transforms.MapElements;
 import org.apache.beam.sdk.transforms.SimpleFunction;
 import org.apache.beam.sdk.transforms.Sum;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.transforms.DoFn;
+import org.apache.beam.sdk.transforms.ParDo;
 
 /**
  * WordCount application.
  */
 public final class WordCountForExperiment {
+
+  static class DoNothingFn extends DoFn<String, String> {
+
+    @ProcessElement
+    public void processElement(@Element final String words, final OutputReceiver<String> receiver) {
+      receiver.output(words);
+    }
+  }
+
   /**
    * Private Constructor.
    */
@@ -53,16 +67,32 @@ public final class WordCountForExperiment {
 
   /**
    * Static method to generate the word count Beam pipeline.
-   * @param options options for the pipeline.
-   * @param inputFilePath the input file path.
+   *
+   * @param options        options for the pipeline.
+   * @param inputFilePath  the input file path.
    * @param outputFilePath the output file path.
    * @return the generated pipeline.
    */
   static Pipeline generateWordCountPipeline(final PipelineOptions options,
-                                                   final String inputFilePath, final String outputFilePath) {
+                                            final String inputFilePath, final String outputFilePath) {
     final Pipeline p = Pipeline.create(options);
 
     final PCollection<String> data = GenericSourceSink.read(p, inputFilePath);
+
+    data
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()));
+
     for (int i = 0; i < 2; i++) {
       data.apply(MapElements.<String, KV<String, Long>>via(new SimpleFunction<String, KV<String, Long>>() {
         @Override
