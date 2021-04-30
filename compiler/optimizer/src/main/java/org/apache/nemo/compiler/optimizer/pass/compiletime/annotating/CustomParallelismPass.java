@@ -20,8 +20,10 @@ package org.apache.nemo.compiler.optimizer.pass.compiletime.annotating;
 
 import org.apache.nemo.common.ir.IRDAG;
 import org.apache.nemo.common.ir.vertex.OperatorVertex;
+import org.apache.nemo.common.ir.vertex.SourceVertex;
 import org.apache.nemo.common.ir.vertex.executionproperty.ParallelismProperty;
-import org.apache.nemo.common.ir.vertex.executionproperty.SplitStageProperty;
+
+import javax.xml.transform.Source;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,13 +43,14 @@ public final class CustomParallelismPass extends AnnotatingPass {
     Pattern pattern = Pattern.compile("P=\"([0-9]+)\"");
 
     dag.getVertices().forEach(vertex -> {
-        int parallelism = 1;
-        if (vertex instanceof OperatorVertex) {
-          Matcher matcher = pattern.matcher(((OperatorVertex) vertex).getTransform().toString());
-          if (matcher.find()) {
-            parallelism = Integer.parseInt(matcher.group(1));
-          }
+      if (vertex instanceof SourceVertex) return;
+      int parallelism = 1;
+      if (vertex instanceof OperatorVertex) {
+        Matcher matcher = pattern.matcher(((OperatorVertex) vertex).getTransform().toString());
+        if (matcher.find()) {
+          parallelism = Integer.parseInt(matcher.group(1));
         }
+      }
       vertex.setPropertyPermanently(ParallelismProperty.of(parallelism));
     });
 
