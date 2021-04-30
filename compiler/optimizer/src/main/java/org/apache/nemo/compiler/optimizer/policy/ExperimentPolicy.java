@@ -19,6 +19,7 @@
 package org.apache.nemo.compiler.optimizer.policy;
 
 import org.apache.nemo.common.ir.IRDAG;
+import org.apache.nemo.compiler.optimizer.pass.compiletime.annotating.CustomParallelismPass;
 import org.apache.nemo.compiler.optimizer.pass.compiletime.annotating.SplitStagePass;
 import org.apache.nemo.compiler.optimizer.pass.compiletime.composite.DefaultCompositePass;
 import org.apache.nemo.compiler.optimizer.pass.runtime.Message;
@@ -30,6 +31,7 @@ public final class ExperimentPolicy implements Policy {
   public static final PolicyBuilder BUILDER =
     new PolicyBuilder()
       .registerCompileTimePass(new SplitStagePass())
+      .registerCompileTimePass(new CustomParallelismPass())
       .registerCompileTimePass(new DefaultCompositePass());
   private final Policy policy;
 
