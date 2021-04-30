@@ -41,12 +41,16 @@ public final class CustomParallelismPass extends AnnotatingPass {
     Pattern pattern = Pattern.compile("P=\"([0-9]+)\"");
 
     dag.getVertices().forEach(vertex -> {
-        Matcher matcher = pattern.matcher(((OperatorVertex) vertex).getTransform().toString());
-        if (matcher.find()) {
-          int parallelism = Integer.parseInt(matcher.group(1));
-          vertex.setPropertyPermanently(ParallelismProperty.of(parallelism));
+        int parallelism = 1;
+        if (vertex instanceof OperatorVertex) {
+          Matcher matcher = pattern.matcher(((OperatorVertex) vertex).getTransform().toString());
+          if (matcher.find()) {
+            parallelism = Integer.parseInt(matcher.group(1));
+          }
         }
+      vertex.setPropertyPermanently(ParallelismProperty.of(parallelism));
     });
+
     return dag;
   }
 }
