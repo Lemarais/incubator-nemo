@@ -76,7 +76,7 @@ public final class DefaultParallelismPass extends AnnotatingPass {
             vertex.setProperty(ParallelismProperty.of(
               sourceVertex.getReadables(desiredSourceParallelism).size()));
           }
-        } else if (!inEdges.isEmpty() && vertex.getPropertyValue(ParallelismProperty.class).isEmpty()) {
+        } else if (!inEdges.isEmpty()) {
           // No reason to propagate via Broadcast edges, as the data streams that will use the broadcasted data
           // as a sideInput will have their own number of parallelism
           final Integer o2oParallelism = inEdges.stream()
@@ -128,10 +128,10 @@ public final class DefaultParallelismPass extends AnnotatingPass {
       .orElseThrow(() -> new IllegalArgumentException("No ParallelismProperty for the vertex " + vertex.getId()));
 
     // update the vertex with the max value.
-//    if (maxParallelism > myParallelism) {
-//      vertex.setProperty(ParallelismProperty.of(maxParallelism));
-//      return maxParallelism;
-//    }
+    if (maxParallelism > myParallelism) {
+      vertex.setProperty(ParallelismProperty.of(maxParallelism));
+      return maxParallelism;
+    }
     return myParallelism;
   }
 

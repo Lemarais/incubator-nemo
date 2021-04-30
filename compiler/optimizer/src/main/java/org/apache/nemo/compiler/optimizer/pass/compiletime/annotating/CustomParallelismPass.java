@@ -51,7 +51,7 @@ public final class CustomParallelismPass extends AnnotatingPass {
           parallelism = Integer.parseInt(matcher.group(1));
         }
       }
-      vertex.setPropertyPermanently(ParallelismProperty.of(parallelism));
+      vertex.setProperty(ParallelismProperty.of(parallelism));
     });
 
     return dag;
