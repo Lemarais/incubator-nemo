@@ -33,6 +33,7 @@ public final class ExperimentPass extends CompositePass {
    */
   public ExperimentPass() {
     super(Arrays.asList(
+      new DefaultParallelismPass(),
       new CustomParallelismPass(),
       new DefaultEdgeEncoderPass(),
       new DefaultEdgeDecoderPass(),
