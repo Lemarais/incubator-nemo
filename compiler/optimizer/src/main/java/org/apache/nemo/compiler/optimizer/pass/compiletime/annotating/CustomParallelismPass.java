@@ -20,25 +20,31 @@ package org.apache.nemo.compiler.optimizer.pass.compiletime.annotating;
 
 import org.apache.nemo.common.ir.IRDAG;
 import org.apache.nemo.common.ir.vertex.OperatorVertex;
+import org.apache.nemo.common.ir.vertex.executionproperty.ParallelismProperty;
 import org.apache.nemo.common.ir.vertex.executionproperty.SplitStageProperty;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Lambda Pass.
  * Description: A part of lambda executor, assigning LambdaResourceProperty
  */
-@Annotates(SplitStageProperty.class)
-public final class SplitStagePass extends AnnotatingPass {
+@Annotates(ParallelismProperty.class)
+public final class CustomParallelismPass extends AnnotatingPass {
 
-  public SplitStagePass() {
-    super(SplitStagePass.class);
+  public CustomParallelismPass() {
+    super(CustomParallelismPass.class);
   }
 
   @Override
   public IRDAG apply(final IRDAG dag) {
+    Pattern pattern = Pattern.compile("P=\"([0-9]+)\"");
+
     dag.getVertices().forEach(vertex -> {
-        if (vertex instanceof OperatorVertex &&
-            ((OperatorVertex) vertex).getTransform().toString().contains("Split")) {
-          vertex.setPropertyPermanently(SplitStageProperty.of(true));
+        Matcher matcher = pattern.matcher(((OperatorVertex) vertex).getTransform().toString());
+        if (matcher.find()) {
+          int parallelism = Integer.parseInt(matcher.group(1));
+          vertex.setPropertyPermanently(ParallelismProperty.of(parallelism));
         }
     });
     return dag;
