@@ -79,22 +79,22 @@ public final class WordCountForExperiment {
 
     final PCollection<String> data = GenericSourceSink.read(p, inputFilePath);
 
-    data
+    final PCollection<String> newData = data
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("End", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("End", ParDo.of(new DoNothingFn()))
       .apply("Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("End", ParDo.of(new DoNothingFn()))
       .apply("Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("Do Nothing", ParDo.of(new DoNothingFn()));
 
     for (int i = 0; i < 2; i++) {
-      data.apply(MapElements.<String, KV<String, Long>>via(new SimpleFunction<String, KV<String, Long>>() {
+      newData.apply(MapElements.<String, KV<String, Long>>via(new SimpleFunction<String, KV<String, Long>>() {
         @Override
         public KV<String, Long> apply(final String line) {
           final String[] words = line.split(" +");
