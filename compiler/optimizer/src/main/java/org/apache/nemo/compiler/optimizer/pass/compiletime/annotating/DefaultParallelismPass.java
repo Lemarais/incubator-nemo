@@ -72,11 +72,11 @@ public final class DefaultParallelismPass extends AnnotatingPass {
           final SourceVertex sourceVertex = (SourceVertex) vertex;
           final Optional<Integer> originalParallelism = vertex.getPropertyValue(ParallelismProperty.class);
           // We manipulate them if it is set as default value of 1.
-          if (!originalParallelism.isPresent()) {
+          if (originalParallelism.isEmpty()) {
             vertex.setProperty(ParallelismProperty.of(
               sourceVertex.getReadables(desiredSourceParallelism).size()));
           }
-        } else if (!inEdges.isEmpty()) {
+        } else if (!inEdges.isEmpty() && vertex.getPropertyValue(ParallelismProperty.class).isEmpty()) {
           // No reason to propagate via Broadcast edges, as the data streams that will use the broadcasted data
           // as a sideInput will have their own number of parallelism
           final Integer o2oParallelism = inEdges.stream()
