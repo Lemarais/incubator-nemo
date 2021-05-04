@@ -44,8 +44,7 @@ public final class ExperimentPass extends CompositePass {
       new CompressionPass(),
       new ResourceLocalityPass(),
       new ResourceSlotPass(),
-      new CustomDataStorePass(),
-      new CustomCommunicationPass()
+      new CustomDataStorePass()
     ));
   }
 }
