@@ -81,12 +81,12 @@ public final class WordCountForExperiment {
 
     final PCollection<String> newData = data
       .apply("P=3 Group=1 Store=F", ParDo.of(new DoNothingFn()))
+      .apply("P=3 Group=1 Store=F Communication=S", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=1 Store=F", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=1 Store=F", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=2 Store=F", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=2 Store=F", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=2 Store=F", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=3 Store=F", ParDo.of(new DoNothingFn()))
+      .apply("P=3 Group=3 Store=F Communication=S", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=4 Store=F", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=5 Store=F", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=6 Store=F", ParDo.of(new DoNothingFn()))
