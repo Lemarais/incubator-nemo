@@ -80,18 +80,18 @@ public final class WordCountForExperiment {
     final PCollection<String> data = GenericSourceSink.read(p, inputFilePath);
 
     final PCollection<String> newData = data
-      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Split", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Split", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Split", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()));
+      .apply("P=1 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Split", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Split", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Split", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Do Nothing", ParDo.of(new DoNothingFn()));
 
     for (int i = 0; i < 2; i++) {
       newData.apply(MapElements.<String, KV<String, Long>>via(new SimpleFunction<String, KV<String, Long>>() {
