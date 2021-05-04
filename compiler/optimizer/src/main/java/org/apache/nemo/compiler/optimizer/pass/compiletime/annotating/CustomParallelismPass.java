@@ -40,7 +40,7 @@ public final class CustomParallelismPass extends AnnotatingPass {
 
   @Override
   public IRDAG apply(final IRDAG dag) {
-    Pattern pattern = Pattern.compile("P=\"([0-9]+)\"");
+    Pattern pattern = Pattern.compile("P=([0-9]+)");
 
     dag.getVertices().forEach(vertex -> {
       if (vertex instanceof SourceVertex) return;
