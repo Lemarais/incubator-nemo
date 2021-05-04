@@ -82,14 +82,14 @@ public final class WordCountForExperiment {
     final PCollection<String> newData = data
       .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Split", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Split", ParDo.of(new DoNothingFn()))
       .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Split", ParDo.of(new DoNothingFn()))
+      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("P=3 Do Nothing", ParDo.of(new DoNothingFn()));
 
