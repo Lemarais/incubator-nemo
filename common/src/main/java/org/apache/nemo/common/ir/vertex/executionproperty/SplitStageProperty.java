@@ -23,13 +23,13 @@ import org.apache.nemo.common.ir.executionproperty.VertexExecutionProperty;
 /**
  * ScheduleGroup ExecutionProperty.
  */
-public final class SplitStageProperty extends VertexExecutionProperty<Boolean> {
+public final class SplitStageProperty extends VertexExecutionProperty<Integer> {
   /**
    * Constructor.
    *
    * @param value value of the execution property.
    */
-  private SplitStageProperty(final Boolean value) {
+  private SplitStageProperty(final int value) {
     super(value);
   }
 
@@ -39,7 +39,7 @@ public final class SplitStageProperty extends VertexExecutionProperty<Boolean> {
    * @param value value of the new execution property.
    * @return the newly created execution property.
    */
-  public static SplitStageProperty of(final Boolean value) {
+  public static SplitStageProperty of(final int value) {
     return new SplitStageProperty(value);
   }
 }
