@@ -86,9 +86,9 @@ public final class WordCountForExperiment {
       .apply("P=3 Group=2 Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=2 Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=2 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=3 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=1 Group=3 Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=4 Do Nothing", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=5 Do Nothing", ParDo.of(new DoNothingFn()))
+      .apply("P=6 Group=5 Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=6 Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=7 Do Nothing", ParDo.of(new DoNothingFn()))
       .apply("P=3 Group=1 Do Nothing", ParDo.of(new DoNothingFn()));
