@@ -19,11 +19,12 @@
 package org.apache.nemo.compiler.optimizer.pass.compiletime.annotating;
 
 import org.apache.nemo.common.ir.IRDAG;
+import org.apache.nemo.common.ir.edge.IREdge;
+import org.apache.nemo.common.ir.edge.executionproperty.DataStoreProperty;
 import org.apache.nemo.common.ir.vertex.OperatorVertex;
 import org.apache.nemo.common.ir.vertex.SourceVertex;
 import org.apache.nemo.common.ir.vertex.executionproperty.ParallelismProperty;
 
-import javax.xml.transform.Source;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,24 +32,30 @@ import java.util.regex.Pattern;
  * Lambda Pass.
  * Description: A part of lambda executor, assigning LambdaResourceProperty
  */
-@Annotates(ParallelismProperty.class)
-public final class CustomParallelismPass extends AnnotatingPass {
+@Annotates(DataStoreProperty.class)
+public final class CustomDataStorePass extends AnnotatingPass {
 
-  public CustomParallelismPass() {
-    super(CustomParallelismPass.class);
+  public CustomDataStorePass() {
+    super(CustomDataStorePass.class);
   }
 
   @Override
   public IRDAG apply(final IRDAG dag) {
-    Pattern pattern = Pattern.compile("P=([0-9]+)");
+    Pattern pattern = Pattern.compile("Store=(M|F)");
     dag.getVertices().forEach(vertex -> {
-
       if (vertex instanceof SourceVertex) return;
       if (vertex instanceof OperatorVertex) {
         Matcher matcher = pattern.matcher(((OperatorVertex) vertex).getTransform().toString());
         if (matcher.find()) {
-          int parallelism = Integer.parseInt(matcher.group(1));
-          vertex.setProperty(ParallelismProperty.of(parallelism));
+          DataStoreProperty.Value dataStore = null;
+          if (matcher.group(1).equals("M")) {
+            dataStore = DataStoreProperty.Value.MEMORY_STORE;
+          } else if (matcher.group(1).equals("F")) {
+            dataStore = DataStoreProperty.Value.LOCAL_FILE_STORE;
+          }
+          for (IREdge edge: dag.getOutgoingEdgesOf(vertex)){
+            edge.setProperty(DataStoreProperty.of(dataStore));
+          }
         }
       }
     });
