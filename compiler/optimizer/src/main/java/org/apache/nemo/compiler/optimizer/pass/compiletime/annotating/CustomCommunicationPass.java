@@ -22,6 +22,7 @@ import org.apache.nemo.common.ir.IRDAG;
 import org.apache.nemo.common.ir.edge.IREdge;
 import org.apache.nemo.common.ir.edge.executionproperty.CommunicationPatternProperty;
 import org.apache.nemo.common.ir.edge.executionproperty.DataStoreProperty;
+import org.apache.nemo.common.ir.edge.executionproperty.PartitionerProperty;
 import org.apache.nemo.common.ir.vertex.OperatorVertex;
 import org.apache.nemo.common.ir.vertex.SourceVertex;
 
@@ -56,6 +57,7 @@ public final class CustomCommunicationPass extends AnnotatingPass {
             communicationPattern = CommunicationPatternProperty.Value.BROADCAST;
           }
           for (IREdge edge: dag.getOutgoingEdgesOf(vertex)){
+            edge.setProperty(PartitionerProperty.of(PartitionerProperty.Type.HASH));
             edge.setProperty(CommunicationPatternProperty.of(communicationPattern));
           }
         }
