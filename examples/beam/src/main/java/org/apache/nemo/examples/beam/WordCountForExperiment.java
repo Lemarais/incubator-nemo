@@ -44,6 +44,25 @@ public final class WordCountForExperiment {
     }
   }
 
+  static class SleepFn extends DoFn<String, String> {
+    private int sleep;
+
+    public SleepFn(int sleep) {
+      this.sleep = sleep;
+    }
+
+    @ProcessElement
+    public void processElement(@Element final String words, final OutputReceiver<String> receiver) {
+      try {
+        Thread.sleep(1000);
+      }
+      catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      receiver.output(words);
+    }
+  }
+
   /**
    * Private Constructor.
    */
@@ -79,7 +98,7 @@ public final class WordCountForExperiment {
 
     final PCollection<String> data = GenericSourceSink.read(p, inputFilePath);
 
-    final PCollection<String> newData = data
+    final PCollection<String> edgeTest = data
       .apply("Group=1 Store=M", ParDo.of(new DoNothingFn()))
       .apply("Group=1 Store=M", ParDo.of(new DoNothingFn()))
       .apply("Group=2 Store=M", ParDo.of(new DoNothingFn()))
@@ -99,8 +118,14 @@ public final class WordCountForExperiment {
       .apply("Group=9 Store=F", ParDo.of(new DoNothingFn()))
       .apply("Group=9 Store=M", ParDo.of(new DoNothingFn()));
 
+    final PCollection<String> vertexTest = edgeTest
+      .apply(ParDo.of(new SleepFn(1000)))
+      .apply(ParDo.of(new SleepFn(2000)))
+      .apply(ParDo.of(new SleepFn(4000)));
+
+
     for (int i = 0; i < 2; i++) {
-      newData.apply(MapElements.<String, KV<String, Long>>via(new SimpleFunction<String, KV<String, Long>>() {
+      vertexTest.apply(MapElements.<String, KV<String, Long>>via(new SimpleFunction<String, KV<String, Long>>() {
         @Override
         public KV<String, Long> apply(final String line) {
           final String[] words = line.split(" +");
@@ -109,13 +134,7 @@ public final class WordCountForExperiment {
           return KV.of(documentId, count);
         }
       }))
-        .apply(Sum.longsPerKey())
-        .apply(MapElements.<KV<String, Long>, String>via(new SimpleFunction<KV<String, Long>, String>() {
-          @Override
-          public String apply(final KV<String, Long> kv) {
-            return kv.getKey() + ": " + kv.getValue();
-          }
-        }));
+      .apply(Sum.longsPerKey());
     }
     return p;
   }
