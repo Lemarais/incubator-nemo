@@ -80,18 +80,24 @@ public final class WordCountForExperiment {
     final PCollection<String> data = GenericSourceSink.read(p, inputFilePath);
 
     final PCollection<String> newData = data
-      .apply("P=3 Group=1 Store=F", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=1 Store=F Communication=S", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=1 Store=F", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=2 Store=F", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=2 Store=F", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=2 Store=F", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=3 Store=F Communication=S", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=4 Store=F", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=5 Store=F", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=6 Store=F", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=7 Store=F", ParDo.of(new DoNothingFn()))
-      .apply("P=3 Group=1 Store=F", ParDo.of(new DoNothingFn()));
+      .apply("Group=1 Store=M", ParDo.of(new DoNothingFn()))
+      .apply("Group=1 Store=M", ParDo.of(new DoNothingFn()))
+      .apply("Group=2 Store=M", ParDo.of(new DoNothingFn()))
+      .apply("Group=3 Store=M", ParDo.of(new DoNothingFn()))
+      .apply("Group=3 Store=M", ParDo.of(new DoNothingFn()))
+      .apply("Group=3 Store=F", ParDo.of(new DoNothingFn()))
+      .apply("Group=4 Store=M", ParDo.of(new DoNothingFn()))
+      .apply("Group=5 Store=F", ParDo.of(new DoNothingFn()))
+      .apply("Group=5 Store=M", ParDo.of(new DoNothingFn()))
+      .apply("Group=5 Store=F", ParDo.of(new DoNothingFn()))
+      .apply("Group=5 Store=M", ParDo.of(new DoNothingFn()))
+      .apply("Group=6 Store=F", ParDo.of(new DoNothingFn()))
+      .apply("Group=7 Store=F", ParDo.of(new DoNothingFn()))
+      .apply("Group=7 Store=F", ParDo.of(new DoNothingFn()))
+      .apply("Group=7 Store=F", ParDo.of(new DoNothingFn()))
+      .apply("Group=8 Store=F", ParDo.of(new DoNothingFn()))
+      .apply("Group=9 Store=F", ParDo.of(new DoNothingFn()))
+      .apply("Group=9 Store=M", ParDo.of(new DoNothingFn()));
 
     for (int i = 0; i < 2; i++) {
       newData.apply(MapElements.<String, KV<String, Long>>via(new SimpleFunction<String, KV<String, Long>>() {
