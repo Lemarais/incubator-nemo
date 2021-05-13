@@ -119,9 +119,9 @@ public final class WordCountForExperiment {
       .apply("Group=9 Store=M", ParDo.of(new DoNothingFn()));
 
     final PCollection<String> vertexTest = edgeTest
-      .apply(ParDo.of(new SleepFn(1000)))
-      .apply(ParDo.of(new SleepFn(2000)))
-      .apply(ParDo.of(new SleepFn(4000)));
+      .apply("Group=10", ParDo.of(new SleepFn(1000)))
+      .apply("Group=11", ParDo.of(new SleepFn(2000)))
+      .apply("Group=12", ParDo.of(new SleepFn(4000)));
 
 
     for (int i = 0; i < 2; i++) {
