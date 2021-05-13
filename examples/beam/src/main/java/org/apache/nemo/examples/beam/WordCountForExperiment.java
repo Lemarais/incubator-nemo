@@ -44,20 +44,18 @@ public final class WordCountForExperiment {
     }
   }
 
-  static class SleepFn extends DoFn<String, String> {
-    private int sleep;
+  static class IterationFn extends DoFn<String, String> {
+    private int iteration;
 
-    public SleepFn(int sleep) {
-      this.sleep = sleep;
+    public IterationFn(int iteration) {
+      this.iteration = iteration;
     }
 
     @ProcessElement
-    public void processElement(@Element final String words, final OutputReceiver<String> receiver) {
-      try {
-        Thread.sleep(1000);
-      }
-      catch (InterruptedException e) {
-        e.printStackTrace();
+    public void processElement(@Element String words, final OutputReceiver<String> receiver) {
+      for (int i = 0 ; i < this.iteration; i++) {
+        words = words.replace(" +", "#");
+        words = words.replace("#+", " ");
       }
       receiver.output(words);
     }
@@ -119,9 +117,9 @@ public final class WordCountForExperiment {
       .apply("Group=9 Store=M", ParDo.of(new DoNothingFn()));
 
     final PCollection<String> vertexTest = edgeTest
-      .apply("Group=10", ParDo.of(new SleepFn(1000)))
-      .apply("Group=11", ParDo.of(new SleepFn(2000)))
-      .apply("Group=12", ParDo.of(new SleepFn(4000)));
+      .apply("Group=10", ParDo.of(new IterationFn(1000)))
+      .apply("Group=11", ParDo.of(new IterationFn(2000)))
+      .apply("Group=12", ParDo.of(new IterationFn(4000)));
 
 
     for (int i = 0; i < 2; i++) {
