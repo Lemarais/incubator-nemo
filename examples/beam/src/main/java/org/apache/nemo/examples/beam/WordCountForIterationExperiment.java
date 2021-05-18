@@ -21,13 +21,7 @@ package org.apache.nemo.examples.beam;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.transforms.*;
-import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * WordCount application.
@@ -51,7 +45,7 @@ public final class WordCountForIterationExperiment {
 
     @ProcessElement
     public void processElement(@Element String words, final OutputReceiver<String> receiver) {
-      for (int i = 0 ; i < this.iteration; i++) {
+      for (int i = 0; i < this.iteration; i++) {
         words = words.replace(" +", "#");
         words = words.replace("#+", " ");
       }
@@ -72,53 +66,47 @@ public final class WordCountForIterationExperiment {
    */
   public static void main(final String[] args) {
     final String inputFilePath = args[0];
-    final List<Integer> iterations = Arrays.stream(args[1].split(" ")).map(Integer::valueOf).collect(Collectors.toList());
+    final int iteration = Integer.parseInt(args[1]);
     final PipelineOptions options = NemoPipelineOptionsFactory.create();
     options.setJobName("WordCountForExperiment");
 
-    final Pipeline p = generateWordCountPipeline(options, inputFilePath, iterations);
+    final Pipeline p = generateWordCountPipeline(options, inputFilePath, iteration);
     p.run().waitUntilFinish();
   }
 
   /**
    * Static method to generate the word count Beam pipeline.
    *
-   * @param options        options for the pipeline.
-   * @param inputFilePath  the input file path.
-   * @param iterations     the output file path.
+   * @param options       options for the pipeline.
+   * @param inputFilePath the input file path.
+   * @param iteration     the output file path.
    * @return the generated pipeline.
    */
   static Pipeline generateWordCountPipeline(final PipelineOptions options,
-                                            final String inputFilePath, final List<Integer> iterations) {
+                                            final String inputFilePath, final int iteration) {
 
     final Pipeline p = Pipeline.create(options);
 
-    final List<PCollection<String>> data = new ArrayList<>();
-    data.add(GenericSourceSink.read(p, inputFilePath));
-    for (int i = 0; i < iterations.size() ; i++) {
-      int iteration = iterations.get(i);
-      final PCollection<String> newData = data.get(i)
-        .apply(String.format("Group=1 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=1 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=2 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=3 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=3 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=3 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=4 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=5 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=5 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=5 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=5 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=6 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=7 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=7 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=7 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=8 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=9 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-        .apply(String.format("Group=9 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)));
-
-      data.add(newData);
-    }
+    final PCollection<String> data = GenericSourceSink.read(p, inputFilePath);
+    final PCollection<String> newData = data
+      .apply(String.format("Group=1 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=1 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=2 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=3 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=3 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=3 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=4 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=6 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=7 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=7 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=7 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=8 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=9 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=9 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)));
 
     return p;
   }
