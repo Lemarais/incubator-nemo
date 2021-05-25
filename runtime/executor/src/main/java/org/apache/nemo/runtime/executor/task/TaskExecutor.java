@@ -350,20 +350,20 @@ public final class TaskExecutor {
 
     // Phase 1: Consume task-external input data.
 
-//    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
-//      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
-//        null, TaskState.State.START_FETCH)));
+    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
+      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
+        null, TaskState.State.START_FETCH)));
 
-//    metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
-//      SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
-//        TaskState.State.START_FETCH.toString(), "")));
+    metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
+      SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
+        TaskState.State.START_FETCH.toString(), "")));
 
     if (!handleDataFetchers(dataFetchers)) {
       return;
     }
-//    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
-//      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
-//        null, TaskState.State.END_FETCH)));
+    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
+      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
+        null, TaskState.State.END_FETCH)));
 
     metricMessageSender.send(TASK_METRIC_ID, taskId, "boundedSourceReadTime",
       SerializationUtils.serialize(boundedSourceReadTime));
@@ -373,21 +373,21 @@ public final class TaskExecutor {
       SerializationUtils.serialize(encodedReadBytes));
 
     // Phase 2: Finalize task-internal states and elements
-//    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
-//      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
-//        null, TaskState.State.START_FINALIZE)));
+    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
+      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
+        null, TaskState.State.START_FINALIZE)));
     for (final VertexHarness vertexHarness : sortedHarnesses) {
-//      metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
-//        SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
-//          TaskState.State.START_FINALIZE.toString(), vertexHarness.getIRVertex().getId())));
+      metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
+        SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
+          TaskState.State.START_FINALIZE.toString(), vertexHarness.getIRVertex().getId())));
       finalizeVertex(vertexHarness);
-//      metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
-//        SerializationUtils.serialize(new VertexExecution(System.currentTimeMillis(),
-//          TaskState.State.END_FINALIZE.toString(), vertexHarness.getIRVertex().getId())));
+      metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
+        SerializationUtils.serialize(new VertexExecution(System.currentTimeMillis(),
+          TaskState.State.END_FINALIZE.toString(), vertexHarness.getIRVertex().getId())));
     }
-//    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
-//      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
-//        null, TaskState.State.END_FINALIZE)));
+    metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
+      SerializationUtils.serialize(new StateTransitionEvent<>(System.currentTimeMillis(),
+        null, TaskState.State.END_FINALIZE)));
 
     metricMessageSender.send(TASK_METRIC_ID, taskId, "taskDuration",
       SerializationUtils.serialize(System.currentTimeMillis() - executionStartTime));
@@ -487,18 +487,18 @@ public final class TaskExecutor {
           final Object element = dataFetcher.fetchDataElement();
           onEventFromDataFetcher(element, dataFetcher);
           if (element instanceof Finishmark) {
-//            metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
-//              SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
-//                TaskState.State.END_FETCH.toString(), dataFetcher.getDataSource().getId())));
+            metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
+              SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
+                TaskState.State.END_FETCH.toString(), dataFetcher.getDataSource().getId())));
             availableIterator.remove();
           }
         } catch (final NoSuchElementException e) {
           // No element in current data fetcher, fetch data from next fetcher
           // move current data fetcher to pending.
           availableIterator.remove();
-//          metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
-//            SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
-//              TaskState.State.PENDING_FETCH.toString(), dataFetcher.getDataSource().getId())));
+          metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
+            SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
+              TaskState.State.PENDING_FETCH.toString(), dataFetcher.getDataSource().getId())));
           pendingFetchers.add(dataFetcher);
         } catch (final IOException e) {
           // IOException means that this task should be retried.
