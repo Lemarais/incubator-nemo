@@ -34,6 +34,7 @@ public class TaskMetric implements StateMetric<TaskState.State> {
   private String containerId = "";
   private int scheduleAttempt = -1;
   private List<StateTransitionEvent<TaskState.State>> stateTransitionEvents = new ArrayList<>();
+  private List<VertexExecution> vertexExecution = new ArrayList<>();
   private long taskDuration = -1;
   private long taskCPUTime = -1;
   private long schedulingOverhead = -1;
@@ -93,6 +94,14 @@ public class TaskMetric implements StateMetric<TaskState.State> {
 
   private void addEvent(final StateTransitionEvent<TaskState.State> event) {
     stateTransitionEvents.add(event);
+  }
+
+  public final List<VertexExecution> getVertexExecution() {
+    return vertexExecution;
+  }
+
+  private void addVertexExecution(final VertexExecution vertex) {
+    vertexExecution.add(vertex);
   }
 
   /**
@@ -261,6 +270,11 @@ public class TaskMetric implements StateMetric<TaskState.State> {
   public final boolean processMetricMessage(final String metricField, final byte[] metricValue) {
     LOG.debug("metric {} has just arrived!", metricField);
     switch (metricField) {
+      case "vertexExecution":
+        final VertexExecution newVertexExecution =
+          SerializationUtils.deserialize(metricValue);
+        addVertexExecution(newVertexExecution);
+        break;
       case "taskDuration":
         setTaskDuration(SerializationUtils.deserialize(metricValue));
         break;
