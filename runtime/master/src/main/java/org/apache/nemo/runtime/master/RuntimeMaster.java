@@ -223,6 +223,22 @@ public final class RuntimeMaster {
   /**
    * Flush metrics.
    */
+  public void onlyFlushMetrics() {
+    metricManagerMaster.sendMetricFlushRequest();
+
+    // save metric to file
+    metricStore.dumpAllMetricToFile(Paths.get(dagDirectory,
+      "Metric_" + jobId + "_" + System.currentTimeMillis() + ".json").toString());
+
+    // save metric to database
+    if (this.dbEnabled) {
+      metricStore.saveOptimizationMetricsToDB(dbAddress, jobId, dbId, dbPassword);
+    }
+  }
+
+  /**
+   * Flush metrics.
+   */
   public void flushMetrics() {
     if (metricCountDownLatch.getCount() == 0) {
       metricCountDownLatch = new CountDownLatch(executorRegistry.getNumberOfRunningExecutors());
@@ -500,7 +516,7 @@ public final class RuntimeMaster {
     final ScheduledExecutorService dagLoggingExecutor = Executors.newSingleThreadScheduledExecutor();
     dagLoggingExecutor.scheduleAtFixedRate(new Runnable() {
       public void run() {
-        flushMetrics();
+        onlyFlushMetrics();
         planStateManager.storeJSON("periodic");
       }
     }, DAG_LOGGING_PERIOD, DAG_LOGGING_PERIOD, TimeUnit.MILLISECONDS);
