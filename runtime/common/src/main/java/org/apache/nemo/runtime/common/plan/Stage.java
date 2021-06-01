@@ -67,8 +67,8 @@ public final class Stage extends Vertex {
     this.irDag = irDag;
     this.serializedIRDag = SerializationUtils.serialize(irDag);
     this.executionProperties = executionProperties;
-    int x = Integer.parseInt(stageId.substring(5));
-    executionProperties.put(ScheduleGroupProperty.of(x));
+    //int x = Integer.parseInt(stageId.substring(5));
+    //executionProperties.put(ScheduleGroupProperty.of(x));
     this.vertexIdToReadables = vertexIdToReadables;
   }
 
