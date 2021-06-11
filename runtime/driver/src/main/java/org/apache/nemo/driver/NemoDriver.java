@@ -191,12 +191,17 @@ public final class NemoDriver {
    */
   private void startSchedulingUserDAG(final String dagString) {
     runnerThread.execute(() -> {
-      userApplicationRunner.run(dagString);
-      // send driver notification that user application is done.
-      clientRPC.send(ControlMessage.DriverToClientMessage.newBuilder()
-        .setType(ControlMessage.DriverToClientMessageType.ExecutionDone).build());
-      // flush metrics
-      runtimeMaster.flushMetrics();
+      try {
+        userApplicationRunner.run(dagString);
+      } finally {
+        LOG.info("Errors are occurred during job execution");
+        // send driver notification that user application is done.
+        clientRPC.send(ControlMessage.DriverToClientMessage.newBuilder()
+          .setType(ControlMessage.DriverToClientMessageType.ExecutionDone).build());
+
+        // flush metrics
+        runtimeMaster.flushMetrics();
+      }
     });
   }
 
