@@ -77,6 +77,7 @@ public final class TaskState {
     READY,
     EXECUTING,
     START_FETCH,
+    PENDING_FETCH,
     END_FETCH,
     START_FINALIZE,
     END_FINALIZE,

@@ -35,10 +35,6 @@ public class TaskMetric implements StateMetric<TaskState.State> {
   private int scheduleAttempt = -1;
   private List<StateTransitionEvent<TaskState.State>> stateTransitionEvents = new ArrayList<>();
   private List<VertexExecution> vertexExecution = new ArrayList<>();
-  private long startFetch = -1;
-  private long endFetch = -1;
-  private long startFinalize = -1;
-  private long endFinialize = -1;
   private long taskDuration = -1;
   private long taskCPUTime = -1;
   private long schedulingOverhead = -1;
@@ -106,38 +102,6 @@ public class TaskMetric implements StateMetric<TaskState.State> {
 
   private void addVertexExecution(final VertexExecution vertex) {
     vertexExecution.add(vertex);
-  }
-
-  public final long getEndFetch() {
-    return endFetch;
-  }
-
-  private void setEndFetch(final long timestamp) {
-    this.endFetch = timestamp;
-  }
-
-  public final long getStartFetch() {
-    return startFetch;
-  }
-
-  private void setStartFetch(final long timestamp) {
-    this.startFetch = timestamp;
-  }
-
-  public final long getEndFinalize() {
-    return endFinialize;
-  }
-
-  private void setEndFinalize(final long timestamp) {
-    this.endFinialize = timestamp;
-  }
-
-  public final long getStartFinalize() {
-    return startFinalize;
-  }
-
-  private void setStartFinalize(final long timestamp) {
-    this.startFinalize = timestamp;
   }
 
   /**
@@ -310,18 +274,6 @@ public class TaskMetric implements StateMetric<TaskState.State> {
         final VertexExecution newVertexExecution =
           SerializationUtils.deserialize(metricValue);
         addVertexExecution(newVertexExecution);
-        break;
-      case "startFinalize":
-        setStartFinalize(SerializationUtils.deserialize(metricValue));
-        break;
-      case "endFinalize":
-        setEndFinalize(SerializationUtils.deserialize(metricValue));
-        break;
-      case "startFetch":
-        setStartFetch(SerializationUtils.deserialize(metricValue));
-        break;
-      case "endFetch":
-        setEndFetch(SerializationUtils.deserialize(metricValue));
         break;
       case "taskDuration":
         setTaskDuration(SerializationUtils.deserialize(metricValue));

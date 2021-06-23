@@ -224,22 +224,22 @@ public final class RuntimeMaster {
    * Flush metrics.
    */
   public void flushMetrics() {
-    if (metricCountDownLatch.getCount() == 0) {
-      metricCountDownLatch = new CountDownLatch(executorRegistry.getNumberOfRunningExecutors());
+//    if (metricCountDownLatch.getCount() == 0) {
+//      metricCountDownLatch = new CountDownLatch(executorRegistry.getNumberOfRunningExecutors());
       // send metric flush request to all executors
       metricManagerMaster.sendMetricFlushRequest();
-    }
+//    }
 
-    try {
-      if (!metricCountDownLatch.await(METRIC_ARRIVE_TIMEOUT, TimeUnit.MILLISECONDS)) {
-        LOG.warn("Write Metric before all metric messages arrived.");
-      }
-    } catch (InterruptedException e) {
-      LOG.warn("Waiting Save Metric Process interrupted: ", e);
-      // clean up state...
-      Thread.currentThread().interrupt();
-    }
-
+//    try {
+//      if (!metricCountDownLatch.await(METRIC_ARRIVE_TIMEOUT, TimeUnit.MILLISECONDS)) {
+//        LOG.warn("Write Metric before all metric messages arrived.");
+//      }
+//    } catch (InterruptedException e) {
+//      LOG.warn("Waiting Save Metric Process interrupted: ", e);
+//      // clean up state...
+//      Thread.currentThread().interrupt();
+//    }
+//
     // save metric to file
     metricStore.dumpAllMetricToFile(Paths.get(dagDirectory,
       "Metric_" + jobId + "_" + System.currentTimeMillis() + ".json").toString());
@@ -285,6 +285,23 @@ public final class RuntimeMaster {
     speculativeTaskCloningThread.shutdown();
 
     try {
+        // wait for metric flush
+      if (!metricCountDownLatch.await(METRIC_ARRIVE_TIMEOUT, TimeUnit.MILLISECONDS)) {
+        LOG.warn("Terminating master before all executor terminated messages arrived.");
+      }
+    } catch (final InterruptedException e) {
+      LOG.warn("Waiting executor terminating process interrupted: ", e);
+      // clean up state...
+      Thread.currentThread().interrupt();
+    }
+
+    if (metricCountDownLatch.getCount() == 0) {
+      metricCountDownLatch = new CountDownLatch(executorRegistry.getNumberOfRunningExecutors());
+      //send metric flush request to all executors
+      metricManagerMaster.sendMetricFlushRequest();
+    }
+
+    try {
       // wait for metric flush
       if (!metricCountDownLatch.await(METRIC_ARRIVE_TIMEOUT, TimeUnit.MILLISECONDS)) {
         LOG.warn("Terminating master before all executor terminated messages arrived.");
@@ -294,6 +311,10 @@ public final class RuntimeMaster {
       // clean up state...
       Thread.currentThread().interrupt();
     }
+
+    // save metric to file
+    metricStore.dumpAllMetricToFile(Paths.get(dagDirectory,
+      "Metric_" + jobId + "_" + System.currentTimeMillis() + ".json").toString());
 
     runtimeMasterThread.execute(() -> {
       scheduler.terminate();

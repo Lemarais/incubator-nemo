@@ -16,37 +16,30 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.nemo.runtime.common.metric;
+package org.apache.nemo.common.ir.vertex.executionproperty;
+
+import org.apache.nemo.common.ir.executionproperty.VertexExecutionProperty;
 
 /**
- * Event of state transition. It contains timestamp and the state transition.
- *
+ * ScheduleGroup ExecutionProperty.
  */
-public final class VertexExecution extends Event {
-  private final String vertexName;
-  private final String eventType;
-
-  public VertexExecution(final long timestamp, final String eventType, final String vertexName) {
-    super(timestamp);
-    this.vertexName = vertexName;
-    this.eventType = eventType;
+public final class SplitStageProperty extends VertexExecutionProperty<Integer> {
+  /**
+   * Constructor.
+   *
+   * @param value value of the execution property.
+   */
+  private SplitStageProperty(final int value) {
+    super(value);
   }
 
   /**
-   * Get new state.
+   * Static method exposing the constructor.
    *
-   * @return new state.
+   * @param value value of the new execution property.
+   * @return the newly created execution property.
    */
-  public String getEventType() {
-    return eventType;
-  }
-
-  /**
-   * Get new state.
-   *
-   * @return new state.
-   */
-  public String getVertexName() {
-    return vertexName;
+  public static SplitStageProperty of(final int value) {
+    return new SplitStageProperty(value);
   }
 }
