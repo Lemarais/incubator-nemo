@@ -42,8 +42,6 @@ public final class FixedExecutorAllocationSchedulingConstraint implements Schedu
   public boolean testSchedulability(final ExecutorRepresenter executor, final Task task) {
     final int ExecutorIndex = task.getPropertyValue(ExecutorSelectionProperty.class)
       .orElse(-1);
-    LOG.error("{} {} {}", executor.getExecutorId(), ExecutorIndex, ExecutorIndex < 0 || ExecutorIndex == Integer.parseInt(executor.getExecutorId().substring(8)));
-
     return ExecutorIndex < 0 || ExecutorIndex == Integer.parseInt(executor.getExecutorId().substring(8));
   }
 }

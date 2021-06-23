@@ -138,10 +138,7 @@ final class TaskDispatcher {
           final Optional<SchedulingConstraint> constraint = schedulingConstraintRegistry.get(property.getClass());
           if (constraint.isPresent() && !candidateExecutors.getValue().isEmpty()) {
             candidateExecutors.setValue(candidateExecutors.getValue().stream()
-              .filter(e -> {
-                LOG.error("{} {}", e.getExecutorId(), constraint.toString());
-                return constraint.get().testSchedulability(e, task);
-              })
+              .filter(e -> constraint.get().testSchedulability(e, task))
               .collect(Collectors.toSet()));
           }
         });

@@ -24,6 +24,8 @@ import org.apache.nemo.common.ir.edge.executionproperty.DataStoreProperty;
 import org.apache.nemo.common.ir.vertex.OperatorVertex;
 import org.apache.nemo.common.ir.vertex.SourceVertex;
 import org.apache.nemo.common.ir.vertex.executionproperty.ExecutorSelectionProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -33,6 +35,7 @@ import java.util.regex.Pattern;
  */
 @Annotates(ExecutorSelectionProperty.class)
 public final class CustomExecutorSelectPass extends AnnotatingPass {
+  private static final Logger LOG = LoggerFactory.getLogger(CustomExecutorSelectPass.class);
 
   /**
    * Default constructor.
@@ -48,9 +51,11 @@ public final class CustomExecutorSelectPass extends AnnotatingPass {
 
       if (vertex instanceof SourceVertex) return;
       if (vertex instanceof OperatorVertex) {
+        LOG.error(((OperatorVertex) vertex).getTransform().toString());
         Matcher matcher = pattern.matcher(((OperatorVertex) vertex).getTransform().toString());
         if (matcher.find()) {
           int executorId = Integer.parseInt(matcher.group(1));
+          LOG.error("{}", executorId);
           vertex.setProperty(ExecutorSelectionProperty.of(executorId));
         }
       }
