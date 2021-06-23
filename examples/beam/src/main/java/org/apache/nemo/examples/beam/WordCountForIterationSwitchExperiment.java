@@ -89,24 +89,24 @@ public final class WordCountForIterationSwitchExperiment {
 
     final PCollection<String> data = GenericSourceSink.read(p, inputFilePath);
     final PCollection<String> newData = data
-      .apply(String.format("Group=1 Iteration=%d Store=M Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=1 Iteration=%d Store=M Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=2 Iteration=%d Store=M Executor=1", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=3 Iteration=%d Store=M Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=3 Iteration=%d Store=M Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=3 Iteration=%d Store=F Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=4 Iteration=%d Store=M Executor=1", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=5 Iteration=%d Store=F Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=5 Iteration=%d Store=M Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=5 Iteration=%d Store=F Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=5 Iteration=%d Store=M Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=6 Iteration=%d Store=F Executor=1", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=7 Iteration=%d Store=F Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=7 Iteration=%d Store=F Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=7 Iteration=%d Store=F Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=8 Iteration=%d Store=F Executor=1", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=9 Iteration=%d Store=F Executor=0", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=9 Iteration=%d Store=M Executor=0", iteration), ParDo.of(new IterationFn(iteration)));
+      .apply(String.format("Group=1 Iteration=%d Executor=0 Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=1 Iteration=%d Executor=0 Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=2 Iteration=%d Executor=1 Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=3 Iteration=%d Executor=0 Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=3 Iteration=%d Executor=0 Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=3 Iteration=%d Executor=0 Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=4 Iteration=%d Executor=1 Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Iteration=%d Executor=0 Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Iteration=%d Executor=0 Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Iteration=%d Executor=0 Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Iteration=%d Executor=0 Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=6 Iteration=%d Executor=1 Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=7 Iteration=%d Executor=0 Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=7 Iteration=%d Executor=0 Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=7 Iteration=%d Executor=0 Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=8 Iteration=%d Executor=1 Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=9 Iteration=%d Executor=0 Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=9 Iteration=%d Executor=0 Store=M", iteration), ParDo.of(new IterationFn(iteration)));
 
     return p;
   }

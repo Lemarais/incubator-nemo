@@ -49,8 +49,9 @@ public final class CustomExecutorSelectPass extends AnnotatingPass {
     Pattern pattern = Pattern.compile("Executor=([0-9]+)");
     dag.getVertices().forEach(vertex -> {
 
-      if (vertex instanceof SourceVertex) return;
-      if (vertex instanceof OperatorVertex) {
+      if (vertex instanceof SourceVertex) {
+        vertex.setProperty(ExecutorSelectionProperty.of(4));
+      } else if (vertex instanceof OperatorVertex) {
         LOG.error(((OperatorVertex) vertex).getTransform().toString());
         Matcher matcher = pattern.matcher(((OperatorVertex) vertex).getTransform().toString());
         if (matcher.find()) {
