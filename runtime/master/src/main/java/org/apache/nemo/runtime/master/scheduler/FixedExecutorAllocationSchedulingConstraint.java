@@ -22,6 +22,8 @@ import org.apache.nemo.common.ir.executionproperty.AssociatedProperty;
 import org.apache.nemo.common.ir.vertex.executionproperty.ExecutorSelectionProperty;
 import org.apache.nemo.runtime.common.plan.Task;
 import org.apache.nemo.runtime.master.resource.ExecutorRepresenter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 
@@ -30,6 +32,7 @@ import javax.inject.Inject;
  */
 @AssociatedProperty(ExecutorSelectionProperty.class)
 public final class FixedExecutorAllocationSchedulingConstraint implements SchedulingConstraint {
+  private static final Logger LOG = LoggerFactory.getLogger(FixedExecutorAllocationSchedulingConstraint.class);
 
   @Inject
   private FixedExecutorAllocationSchedulingConstraint() {
@@ -37,6 +40,7 @@ public final class FixedExecutorAllocationSchedulingConstraint implements Schedu
 
   @Override
   public boolean testSchedulability(final ExecutorRepresenter executor, final Task task) {
+    LOG.error(executor.getExecutorId());
     final int ExecutorIndex = task.getPropertyValue(ExecutorSelectionProperty.class)
       .orElse(-1);
 
