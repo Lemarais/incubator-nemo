@@ -58,6 +58,7 @@ public final class CustomExecutorSelectPass extends AnnotatingPass {
           int GroupId = Integer.parseInt(matcher.group(1));
           if (GroupId != groupId) {
             executorId = (executorId + 1) % 2;
+            groupId = GroupId;
           }
         }
       } else {
