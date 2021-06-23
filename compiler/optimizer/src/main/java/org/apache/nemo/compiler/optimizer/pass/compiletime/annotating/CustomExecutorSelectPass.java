@@ -37,20 +37,36 @@ import java.util.regex.Pattern;
 public final class CustomExecutorSelectPass extends AnnotatingPass {
   private static final Logger LOG = LoggerFactory.getLogger(CustomExecutorSelectPass.class);
   private static int executorId;
+  private static int groupId;
   /**
    * Default constructor.
    */
   public CustomExecutorSelectPass() {
     super(CustomExecutorSelectPass.class);
     executorId = 0;
+    groupId = -1;
   }
 
   @Override
   public IRDAG apply(final IRDAG dag) {
+    Pattern pattern = Pattern.compile("Group=([0-9]+)");
     dag.getVertices().forEach(vertex -> {
+      if (vertex instanceof OperatorVertex) {
+        LOG.error(((OperatorVertex) vertex).getTransform().toString());
+        Matcher matcher = pattern.matcher(((OperatorVertex) vertex).getTransform().toString());
+        if (matcher.find()) {
+          int GroupId = Integer.parseInt(matcher.group(1));
+          if (GroupId != groupId) {
+            executorId = (executorId + 1) % 2;
+          }
+        }
+      } else {
+        executorId = (executorId + 1) % 2;
+      }
+
       vertex.setProperty(ExecutorSelectionProperty.of(executorId));
-      executorId = (executorId + 1) % 2;
     });
+
     return dag;
   }
 }
