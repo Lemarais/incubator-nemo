@@ -49,7 +49,6 @@ public final class SchedulingConstraintRegistry {
     registerSchedulingConstraint(fixedExecutorAllocationSchedulingConstraint);
     registerSchedulingConstraint(containerTypeAwareSchedulingConstraint);
     registerSchedulingConstraint(freeSlotSchedulingConstraint);
-    registerSchedulingConstraint(localitySchedulingConstraint);
     registerSchedulingConstraint(antiAffinitySchedulingConstraint);
     registerSchedulingConstraint(nodeShareSchedulingConstraint);
   }

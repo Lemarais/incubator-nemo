@@ -33,27 +33,36 @@ import java.util.regex.Pattern;
  */
 @Annotates(ExecutorSelectionProperty.class)
 public final class CustomExecutorSelectPass extends AnnotatingPass {
+  private static int executorId;
+  private static int groupId;
 
   /**
    * Default constructor.
    */
   public CustomExecutorSelectPass() {
     super(CustomExecutorSelectPass.class);
+    executorId = 0;
+    groupId = -1;
   }
 
   @Override
   public IRDAG apply(final IRDAG dag) {
-    Pattern pattern = Pattern.compile("Executor=([0-9]+)");
+    Pattern pattern = Pattern.compile("Group=([0-9]+)");
     dag.getVertices().forEach(vertex -> {
 
-      if (vertex instanceof SourceVertex) return;
       if (vertex instanceof OperatorVertex) {
         Matcher matcher = pattern.matcher(((OperatorVertex) vertex).getTransform().toString());
         if (matcher.find()) {
-          int executorId = Integer.parseInt(matcher.group(1));
-          vertex.setProperty(ExecutorSelectionProperty.of(executorId));
+          int GroupId = Integer.parseInt(matcher.group(1));
+          if (GroupId != groupId) {
+            executorId = (executorId + 1) % 2;
+            groupId = GroupId;
+          }
         }
+      } else {
+        executorId = (executorId + 1) % 2;
       }
+      vertex.setProperty(ExecutorSelectionProperty.of(executorId));
     });
 
     return dag;
