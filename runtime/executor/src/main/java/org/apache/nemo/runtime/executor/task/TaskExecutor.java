@@ -382,7 +382,7 @@ public final class TaskExecutor {
           TaskState.State.START_FINALIZE.toString(), vertexHarness.getIRVertex().getId())));
       finalizeVertex(vertexHarness);
       metricMessageSender.send("TaskMetric", taskId, "vertexExecution",
-        SerializationUtils.serialize(new VertexExecution(System.currentTimeMillis(),
+        SerializationUtils.serialize(new VertexExecution(System.nanoTime(),
           TaskState.State.END_FINALIZE.toString(), vertexHarness.getIRVertex().getId())));
     }
     metricMessageSender.send("TaskMetric", taskId, "stateTransitionEvent",
