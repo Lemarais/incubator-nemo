@@ -93,7 +93,12 @@ public final class UserApplicationRunner {
       final PhysicalPlan physicalPlan = backend.compile(optimizedDAG);
       ((NemoPlanRewriter) planRewriter).setCurrentPhysicalPlan(physicalPlan);
       LOG.info("##### Nemo Compiler Finish #####");
+      final long compileEndTime = System.currentTimeMillis();
 
+      MetricStore.getStore().getOrCreateMetric(JobMetric.class, physicalPlan.getPlanId())
+        .setStartTime(startTime);
+      MetricStore.getStore().getOrCreateMetric(JobMetric.class, physicalPlan.getPlanId())
+        .setCompileEndTime(compileEndTime);
       // Execute!
       final Pair<PlanStateManager, ScheduledExecutorService> executionResult =
         runtimeMaster.execute(physicalPlan, maxScheduleAttempt);
@@ -114,6 +119,8 @@ public final class UserApplicationRunner {
       LOG.info("{} is complete, with final status {}!", physicalPlan.getPlanId(), state);
       MetricStore.getStore().getOrCreateMetric(JobMetric.class, physicalPlan.getPlanId())
         .setJobDuration(endTime - startTime);
+      MetricStore.getStore().getOrCreateMetric(JobMetric.class, physicalPlan.getPlanId())
+        .setEndTime(endTime);
     } catch (final Exception e) {
       throw new RuntimeException(e);
     }

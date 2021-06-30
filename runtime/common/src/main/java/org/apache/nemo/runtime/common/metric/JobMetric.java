@@ -42,6 +42,9 @@ public final class JobMetric implements StateMetric<PlanState.State> {
   private final String id;
   private final List<StateTransitionEvent<PlanState.State>> stateTransitionEvents;
   private String irDagSummary;
+  private long startTime;
+  private long compileEndTime;
+  private long endTime;
   private Long inputSize;
   private String vertexProperties;
   private String edgeProperties;
@@ -90,6 +93,27 @@ public final class JobMetric implements StateMetric<PlanState.State> {
     return this.edgeProperties;
   }
 
+  public long getStartTime() {
+    return this.startTime;
+  }
+
+  public void setStartTime(final long startTime) {
+    this.startTime = startTime;
+  }
+  public long getCompileEndTime() {
+    return this.compileEndTime;
+  }
+
+  public void setCompileEndTime(final long compileEndTime) {
+    this.compileEndTime = compileEndTime;
+  }
+  public long getEndTime() {
+    return this.endTime;
+  }
+
+  public void setEndTime(final long endTime) {
+    this.endTime = endTime;
+  }
   /**
    * Setter for the IR DAG.
    *

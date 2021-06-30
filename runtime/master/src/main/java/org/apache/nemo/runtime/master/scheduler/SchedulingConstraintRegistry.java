@@ -44,10 +44,11 @@ public final class SchedulingConstraintRegistry {
     final FreeSlotSchedulingConstraint freeSlotSchedulingConstraint,
     final LocalitySchedulingConstraint localitySchedulingConstraint,
     final AntiAffinitySchedulingConstraint antiAffinitySchedulingConstraint,
-    final NodeShareSchedulingConstraint nodeShareSchedulingConstraint) {
+    final NodeShareSchedulingConstraint nodeShareSchedulingConstraint,
+    final FixedExecutorAllocationSchedulingConstraint fixedExecutorAllocationSchedulingConstraint) {
+    registerSchedulingConstraint(fixedExecutorAllocationSchedulingConstraint);
     registerSchedulingConstraint(containerTypeAwareSchedulingConstraint);
     registerSchedulingConstraint(freeSlotSchedulingConstraint);
-    registerSchedulingConstraint(localitySchedulingConstraint);
     registerSchedulingConstraint(antiAffinitySchedulingConstraint);
     registerSchedulingConstraint(nodeShareSchedulingConstraint);
   }
