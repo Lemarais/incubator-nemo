@@ -24,14 +24,14 @@ import org.apache.nemo.common.ir.executionproperty.VertexExecutionProperty;
  * This property decides whether or not to schedule this vertex only on executors where
  * source (including intermediate) data reside.
  */
-public final class ExecutorSelectionProperty extends VertexExecutionProperty<Integer> {
+public final class NodeSelectionProperty extends VertexExecutionProperty<String> {
 
   /**
    * Default constructor.
    *
    * @param value value of the ExecutionProperty
    */
-  private ExecutorSelectionProperty(final Integer value) {
+  private NodeSelectionProperty(final String value) {
     super(value);
   }
 
@@ -41,7 +41,7 @@ public final class ExecutorSelectionProperty extends VertexExecutionProperty<Int
    * @param value value of the new execution property
    * @return the execution property
    */
-  public static ExecutorSelectionProperty of(final Integer value) {
-    return new ExecutorSelectionProperty(value);
+  public static NodeSelectionProperty of(final String value) {
+    return new NodeSelectionProperty(value);
   }
 }
