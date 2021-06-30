@@ -43,6 +43,7 @@ public final class FixedExecutorAllocationSchedulingConstraint implements Schedu
   public boolean testSchedulability(final ExecutorRepresenter executor, final Task task) {
     final Optional<String> NodeName = task.getPropertyValue(NodeSelectionProperty.class);
     LOG.error(NodeName.orElse("There is not selected vertex"));
+    LOG.error(executor.getNodeName());
 
     return NodeName.isEmpty() || executor.getNodeName().equals(NodeName.get());
   }
