@@ -19,24 +19,24 @@
 package org.apache.nemo.compiler.optimizer.policy;
 
 import org.apache.nemo.common.ir.IRDAG;
-import org.apache.nemo.compiler.optimizer.pass.compiletime.annotating.CustomExecutorSelectPass;
+import org.apache.nemo.compiler.optimizer.pass.compiletime.annotating.CustomNodeSelectPass;
 import org.apache.nemo.compiler.optimizer.pass.compiletime.composite.ExperimentPass;
 import org.apache.nemo.compiler.optimizer.pass.runtime.Message;
 
 /**
  * A basic default policy, that performs the minimum amount of optimization to be done to a specific DAG.
  */
-public final class ExperimentSwingPolicy implements Policy {
+public final class ExperimentSwingSourceSamePolicy implements Policy {
   public static final PolicyBuilder BUILDER =
     new PolicyBuilder()
-      .registerCompileTimePass(new CustomExecutorSelectPass())
+      .registerCompileTimePass(new CustomNodeSelectPass("mulan-05.maas"))
       .registerCompileTimePass(new ExperimentPass());
   private final Policy policy;
 
   /**
    * Default constructor.
    */
-  public ExperimentSwingPolicy() {
+  public ExperimentSwingSourceSamePolicy() {
     this.policy = BUILDER.build();
   }
 

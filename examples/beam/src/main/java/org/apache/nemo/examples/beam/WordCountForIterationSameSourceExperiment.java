@@ -26,7 +26,7 @@ import org.apache.beam.sdk.values.PCollection;
 /**
  * WordCount application.
  */
-public final class WordCountForIterationExperiment {
+public final class WordCountForIterationSameSourceExperiment {
 
   static class DoNothingFn extends DoFn<String, String> {
 
@@ -56,7 +56,7 @@ public final class WordCountForIterationExperiment {
   /**
    * Private Constructor.
    */
-  private WordCountForIterationExperiment() {
+  private WordCountForIterationSameSourceExperiment() {
   }
 
   /**
@@ -89,24 +89,24 @@ public final class WordCountForIterationExperiment {
 
     final PCollection<String> data = GenericSourceSink.read(p, inputFilePath);
     final PCollection<String> newData = data
-      .apply(String.format("Group=1 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=1 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=2 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=3 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=3 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=3 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=4 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=5 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=5 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=5 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=5 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=6 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=7 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=7 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=7 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=8 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=9 Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
-      .apply(String.format("Group=9 Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)));
+      .apply(String.format("Group=1 Node=mulan-12.maas Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=1 Node=mulan-12.maas Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=2 Node=mulan-05.maas Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=3 Node=mulan-12.maas Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=3 Node=mulan-12.maas Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=3 Node=mulan-12.maas Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=4 Node=mulan-05.maas Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Node=mulan-12.maas Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Node=mulan-12.maas Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Node=mulan-12.maas Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=5 Node=mulan-12.maas Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=6 Node=mulan-05.maas Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=7 Node=mulan-12.maas Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=7 Node=mulan-12.maas Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=7 Node=mulan-12.maas Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=8 Node=mulan-05.maas Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=9 Node=mulan-12.maas Iteration=%d Store=F", iteration), ParDo.of(new IterationFn(iteration)))
+      .apply(String.format("Group=9 Node=mulan-12.maas Iteration=%d Store=M", iteration), ParDo.of(new IterationFn(iteration)));
 
     return p;
   }

@@ -19,27 +19,28 @@
 package org.apache.nemo.runtime.master.scheduler;
 
 import org.apache.nemo.common.ir.executionproperty.AssociatedProperty;
-import org.apache.nemo.common.ir.vertex.executionproperty.ExecutorSelectionProperty;
+import org.apache.nemo.common.ir.vertex.executionproperty.NodeSelectionProperty;
 import org.apache.nemo.runtime.common.plan.Task;
 import org.apache.nemo.runtime.master.resource.ExecutorRepresenter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
+import java.util.Optional;
 
 /**
  * This policy finds executor that has free slot for a Task.
  */
-@AssociatedProperty(ExecutorSelectionProperty.class)
+@AssociatedProperty(NodeSelectionProperty.class)
 public final class FixedExecutorAllocationSchedulingConstraint implements SchedulingConstraint {
-
   @Inject
   private FixedExecutorAllocationSchedulingConstraint() {
   }
 
   @Override
   public boolean testSchedulability(final ExecutorRepresenter executor, final Task task) {
-    final int ExecutorIndex = task.getPropertyValue(ExecutorSelectionProperty.class)
-      .orElse(-1);
+    final Optional<String> NodeName = task.getPropertyValue(NodeSelectionProperty.class);
 
-    return ExecutorIndex < 0 || ExecutorIndex == Integer.parseInt(executor.getExecutorId().substring(8));
+    return NodeName.isEmpty() || executor.getNodeName().equals(NodeName.get());
   }
 }

@@ -19,52 +19,47 @@
 package org.apache.nemo.compiler.optimizer.pass.compiletime.annotating;
 
 import org.apache.nemo.common.ir.IRDAG;
-import org.apache.nemo.common.ir.edge.executionproperty.DataPersistenceProperty;
-import org.apache.nemo.common.ir.edge.executionproperty.DataStoreProperty;
 import org.apache.nemo.common.ir.vertex.OperatorVertex;
 import org.apache.nemo.common.ir.vertex.SourceVertex;
-import org.apache.nemo.common.ir.vertex.executionproperty.ExecutorSelectionProperty;
+import org.apache.nemo.common.ir.vertex.executionproperty.NodeSelectionProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Pass for initiating IREdge data persistence ExecutionProperty with default values.
  */
-@Annotates(ExecutorSelectionProperty.class)
-public final class CustomExecutorSelectPass extends AnnotatingPass {
-  private static int executorId;
-  private static int groupId;
-
+@Annotates(NodeSelectionProperty.class)
+public final class CustomNodeSelectPass extends AnnotatingPass {
+  static String SourceNode = null;
   /**
    * Default constructor.
    */
-  public CustomExecutorSelectPass() {
-    super(CustomExecutorSelectPass.class);
-    executorId = 0;
-    groupId = -1;
+  public CustomNodeSelectPass(String sourceNode) {
+    super(CustomNodeSelectPass.class);
+    SourceNode = sourceNode;
   }
 
   @Override
   public IRDAG apply(final IRDAG dag) {
-    Pattern pattern = Pattern.compile("Group=([0-9]+)");
+    Pattern pattern = Pattern.compile("Node=([^\\s]+)");
     dag.getVertices().forEach(vertex -> {
-
+      if (vertex instanceof SourceVertex) {
+        vertex.setProperty(NodeSelectionProperty.of(SourceNode));
+      }
       if (vertex instanceof OperatorVertex) {
         Matcher matcher = pattern.matcher(((OperatorVertex) vertex).getTransform().toString());
         if (matcher.find()) {
-          int GroupId = Integer.parseInt(matcher.group(1));
-          if (GroupId != groupId) {
-            executorId = (executorId + 1) % 2;
-            groupId = GroupId;
-          }
+          String NodeName = matcher.group(1);
+          vertex.setProperty(NodeSelectionProperty.of(NodeName));
+        } else {
+          vertex.setProperty(NodeSelectionProperty.of(SourceNode));
         }
-      } else {
-        executorId = (executorId + 1) % 2;
       }
-      vertex.setProperty(ExecutorSelectionProperty.of(executorId));
     });
-
     return dag;
   }
 }
