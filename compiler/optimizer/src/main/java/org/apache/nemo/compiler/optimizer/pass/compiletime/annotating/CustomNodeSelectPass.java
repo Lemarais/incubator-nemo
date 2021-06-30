@@ -58,6 +58,8 @@ public final class CustomNodeSelectPass extends AnnotatingPass {
           String NodeName = matcher.group(1);
           LOG.error(NodeName);
           vertex.setProperty(NodeSelectionProperty.of(NodeName));
+        } else {
+          vertex.setProperty(NodeSelectionProperty.of(SourceNode));
         }
       }
     });
