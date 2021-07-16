@@ -124,13 +124,13 @@ public final class WindowedWordCount {
       .apply(MapElements.<KV<String, Long>, String>via(new SimpleFunction<KV<String, Long>, String>() {
         @Override
         public String apply(final KV<String, Long> kv) {
-          return kv.getKey() + ":" + kv.getValue();
+          return kv.getKey() + SPLITTER + kv.getValue();
         }
       }))
       .apply(MapElements.<String, KV<String, Long>>via(new SimpleFunction<String, KV<String, Long>>() {
         @Override
         public KV<String, Long> apply(final String elem) {
-          final String[] words = elem.split(":");
+          final String[] words = elem.split(SPLITTER);
           return KV.of(words[0], Long.parseLong(words[1]));
         }
       }))
