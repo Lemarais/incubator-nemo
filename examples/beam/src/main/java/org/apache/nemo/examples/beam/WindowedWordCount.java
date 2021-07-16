@@ -45,6 +45,7 @@ public final class WindowedWordCount {
   public static final String INPUT_TYPE_BOUNDED = "bounded";
   public static final String INPUT_TYPE_UNBOUNDED = "unbounded";
   private static final String SPLITTER = "!";
+  private static long ITERATION = 1;
 
 
   /**
@@ -101,6 +102,8 @@ public final class WindowedWordCount {
   public static void main(final String[] args) {
     final String outputFilePath = args[0];
     final String windowType = args[1];
+    ITERATION = Long.parseLong(args[3]);
+
 
     final Window<KV<String, Long>> windowFn;
     if (windowType.equals("fixed")) {
@@ -122,7 +125,7 @@ public final class WindowedWordCount {
         @Override
         public String apply(final KV<String, Long> kv) {
           String result = "";
-          for (int i=0;i<100;i++){
+          for (int i=0;i<ITERATION;i++){
             result = kv.getKey() + ": " + kv.getValue();
           }
           return result;
