@@ -122,7 +122,7 @@ public final class WindowedWordCount {
         @Override
         public String apply(final KV<String, Long> kv) {
           String result = "";
-          for (int i=0;i<10;i++){
+          for (int i=0;i<100;i++){
             result = kv.getKey() + ": " + kv.getValue();
           }
           return result;
