@@ -46,7 +46,7 @@ public final class WindowedWordCount {
 
   public static final String INPUT_TYPE_BOUNDED = "bounded";
   public static final String INPUT_TYPE_UNBOUNDED = "unbounded";
-  private static final String SPLITTER = "!";
+  private static final String SPLITTER = " ";
   private static long ITERATION = 1;
 
 
