@@ -102,7 +102,7 @@ public final class WindowedWordCount {
   public static void main(final String[] args) {
     final String outputFilePath = args[0];
     final String windowType = args[1];
-    ITERATION = Long.parseLong(args[3]);
+    ITERATION = Long.parseLong(args[4]);
 
 
     final Window<KV<String, Long>> windowFn;
