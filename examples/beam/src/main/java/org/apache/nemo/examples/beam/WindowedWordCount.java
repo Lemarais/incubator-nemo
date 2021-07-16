@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
  * A Windowed WordCount application.
  */
 public final class WindowedWordCount {
+  private static final Logger LOG = LoggerFactory.getLogger(WindowedWordCount.class.getName());
+
   /**
    * Private Constructor.
    */
@@ -130,8 +132,13 @@ public final class WindowedWordCount {
       .apply(MapElements.<String, KV<String, Long>>via(new SimpleFunction<String, KV<String, Long>>() {
         @Override
         public KV<String, Long> apply(final String elem) {
-          final String[] words = elem.split(SPLITTER);
-          return KV.of(words[0], Long.parseLong(words[1]));
+          try {
+            final String[] words = elem.split(SPLITTER);
+            return KV.of(words[0], Long.parseLong(words[1]));
+          } catch (Exception e) {
+            LOG.info(elem);
+            throw e;
+          }
         }
       }))
       .apply(Sum.longsPerKey())
