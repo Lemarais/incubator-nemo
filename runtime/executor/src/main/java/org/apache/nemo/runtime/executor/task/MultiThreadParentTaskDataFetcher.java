@@ -58,7 +58,7 @@ class MultiThreadParentTaskDataFetcher extends DataFetcher {
   private boolean firstFetch = true;
 
   private final ConcurrentLinkedQueue elementQueue;
-  private final List<DataUtil.IteratorWithNumBytes> iterators;
+  private final ConcurrentLinkedQueue<DataUtil.IteratorWithNumBytes> iterators;
 
   private long serBytes = 0;
   private long encodedBytes = 0;
@@ -77,7 +77,7 @@ class MultiThreadParentTaskDataFetcher extends DataFetcher {
     this.readersForParentTask = readerForParentTask;
     this.firstFetch = true;
     this.elementQueue = new ConcurrentLinkedQueue();
-    this.iterators = new ArrayList<>();
+    this.iterators = new ConcurrentLinkedQueue<>();
     this.queueInsertionThreads = Executors.newCachedThreadPool();
   }
 
