@@ -65,6 +65,7 @@ public final class Executor {
   private static final Logger LOG = LoggerFactory.getLogger(Executor.class.getName());
 
   private final String executorId;
+  private final int streamMetricPeriod;
 
   /**
    * To be used for a thread pool to execute tasks.
@@ -91,6 +92,7 @@ public final class Executor {
 
   @Inject
   private Executor(@Parameter(JobConf.ExecutorId.class) final String executorId,
+                   @Parameter(JobConf.StreamMetricPeriod.class) final int streamMetricPeriod,
                    final PersistentConnectionToMasterMap persistentConnectionToMasterMap,
                    final MessageEnvironment messageEnvironment,
                    final SerializerManager serializerManager,
@@ -98,6 +100,7 @@ public final class Executor {
                    final BroadcastManagerWorker broadcastManagerWorker,
                    final MetricManagerWorker metricMessageSender) {
     this.executorId = executorId;
+    this.streamMetricPeriod = streamMetricPeriod;
     this.executorService = Executors.newCachedThreadPool(new BasicThreadFactory.Builder()
       .namingPattern("TaskExecutor thread-%d")
       .build());
@@ -152,8 +155,8 @@ public final class Executor {
           e.getPropertyValue(CompressionProperty.class).orElse(null),
           e.getPropertyValue(DecompressionProperty.class).orElse(null))));
 
-      final TaskExecutor executor = new TaskExecutor(task, irDag, taskStateManager, intermediateDataIOFactory,
-        broadcastManagerWorker, metricMessageSender, persistentConnectionToMasterMap);
+      final TaskExecutor executor = new TaskExecutor(task, irDag, taskStateManager, intermediateDataIOFactory, broadcastManagerWorker,
+        metricMessageSender, persistentConnectionToMasterMap, streamMetricPeriod);
       TASK_EXECUTOR_LIST.add(executor);
       executor.execute();
     } catch (final Exception e) {
