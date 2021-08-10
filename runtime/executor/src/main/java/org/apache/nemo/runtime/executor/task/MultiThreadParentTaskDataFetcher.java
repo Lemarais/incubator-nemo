@@ -139,7 +139,6 @@ class MultiThreadParentTaskDataFetcher extends DataFetcher {
           }
           // This iterator is finished.
           countBytesSynchronized(iterator);
-          iterators.remove(iterator);
           elementQueue.offer(Finishmark.getInstance());
         } else {
           LOG.error(exception.getMessage());
@@ -179,7 +178,7 @@ class MultiThreadParentTaskDataFetcher extends DataFetcher {
       for (DataUtil.IteratorWithNumBytes iterator : iterators) {
         currSerBytes += iterator.getCurrNumSerializedBytes();
       }
-      return serBytes + currSerBytes;
+      return currSerBytes;
     } catch (final DataUtil.IteratorWithNumBytes.NumBytesNotSupportedException e) {
       return -1;
     } catch (final IllegalStateException e) {
