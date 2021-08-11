@@ -111,6 +111,10 @@ public final class PipeOutputWriter implements OutputWriter {
 
   @Override
   public void writeLatencymark(final Latencymark latencymark) {
+    if (!initialized) {
+      doInitialize();
+    }
+
     writeData(latencymark, pipes);
   }
 
