@@ -53,7 +53,6 @@ public final class Latencymark implements Serializable {
     return lastTaskId;
   }
 
-
   public void setLastTaskId(final String currTaskId) {
     lastTaskId = currTaskId;
   }
