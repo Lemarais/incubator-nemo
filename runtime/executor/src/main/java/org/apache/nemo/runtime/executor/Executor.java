@@ -66,6 +66,7 @@ public final class Executor {
 
   private final String executorId;
   private final int streamMetricPeriod;
+  private final int latencyMarkSendPeriod;
 
   /**
    * To be used for a thread pool to execute tasks.
@@ -93,6 +94,7 @@ public final class Executor {
   @Inject
   private Executor(@Parameter(JobConf.ExecutorId.class) final String executorId,
                    @Parameter(JobConf.StreamMetricPeriod.class) final int streamMetricPeriod,
+                   @Parameter(JobConf.LatencyMarkPeriod.class) final int latencyMarkSendPeriod,
                    final PersistentConnectionToMasterMap persistentConnectionToMasterMap,
                    final MessageEnvironment messageEnvironment,
                    final SerializerManager serializerManager,
@@ -101,6 +103,7 @@ public final class Executor {
                    final MetricManagerWorker metricMessageSender) {
     this.executorId = executorId;
     this.streamMetricPeriod = streamMetricPeriod;
+    this.latencyMarkSendPeriod = latencyMarkSendPeriod;
     this.executorService = Executors.newCachedThreadPool(new BasicThreadFactory.Builder()
       .namingPattern("TaskExecutor thread-%d")
       .build());
@@ -156,7 +159,7 @@ public final class Executor {
           e.getPropertyValue(DecompressionProperty.class).orElse(null))));
 
       final TaskExecutor executor = new TaskExecutor(task, irDag, taskStateManager, intermediateDataIOFactory, broadcastManagerWorker,
-        metricMessageSender, persistentConnectionToMasterMap, streamMetricPeriod);
+        metricMessageSender, persistentConnectionToMasterMap, streamMetricPeriod, latencyMarkSendPeriod);
       TASK_EXECUTOR_LIST.add(executor);
       executor.execute();
     } catch (final Exception e) {

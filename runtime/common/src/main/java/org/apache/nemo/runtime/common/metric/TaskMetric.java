@@ -37,7 +37,7 @@ public class TaskMetric implements StateMetric<TaskState.State> {
   private int scheduleAttempt = -1;
   private List<StateTransitionEvent<TaskState.State>> stateTransitionEvents = new ArrayList<>();
   private final Map<String, List<StreamMetric>> streamMetricMap = new HashMap<>();
-  private Map<String, List<DelayMetric>> delay = new HashMap<>();
+  private Map<String, List<LatencyMetric>> delay = new HashMap<>();
   private long taskDuration = -1;
   private long taskCPUTime = -1;
   private long schedulingOverhead = -1;
@@ -128,11 +128,11 @@ public class TaskMetric implements StateMetric<TaskState.State> {
   /**
    * Method related to delay.
    */
-  public final Map<String, List<DelayMetric>> getDelay() {
+  public final Map<String, List<LatencyMetric>> getDelay() {
     return this.delay;
   }
 
-  private void setDelay(final DelayMetric delayMetric) {
+  private void setDelay(final LatencyMetric delayMetric) {
     this.delay.putIfAbsent(delayMetric.getId(), new ArrayList<>());
     this.delay.get(delayMetric.getId()).add(delayMetric);
   }
