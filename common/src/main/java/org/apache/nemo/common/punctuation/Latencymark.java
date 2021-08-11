@@ -53,8 +53,23 @@ public final class Latencymark implements Serializable {
     return lastTaskId;
   }
 
-  public void setLastTaskId(String currTaskId) {
+
+  public void setLastTaskId(final String currTaskId) {
     lastTaskId = currTaskId;
+  }
+
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    final Latencymark latencymark = (Latencymark) o;
+    return (timestamp == latencymark.timestamp)
+      && (createdtaskId.equals(latencymark.createdtaskId)
+      && (lastTaskId.equals(latencymark.lastTaskId)));
   }
 
   @Override
