@@ -161,7 +161,7 @@ public final class TaskExecutor {
     for (DataFetcher dataFetcher : dataFetchers) {
       String sourceVertexId = dataFetcher.getDataSource().getId();
 
-      long serializedReadBytes = -1;
+      Pair<Boolean, Long> serializedReadBytes = Pair.of(false, -1L);
 
       if (dataFetcher instanceof ParentTaskDataFetcher) {
         serializedReadBytes = ((ParentTaskDataFetcher) dataFetcher).getCurrSerBytes();
@@ -170,15 +170,15 @@ public final class TaskExecutor {
       }
 
       // if serializedReadBytes is -1, it means that serializedReadBytes is invalid
-      if (serializedReadBytes != -1) {
+      if (serializedReadBytes.right() != -1) {
         long lastSerializedReadBytes = lastSerializedReadByteMap.get(sourceVertexId);
-        lastSerializedReadByteMap.put(sourceVertexId, serializedReadBytes);
-        serializedReadBytes -= lastSerializedReadBytes;
+        lastSerializedReadByteMap.put(sourceVertexId, serializedReadBytes.right());
+        serializedReadBytes = Pair.of(serializedReadBytes.left(), serializedReadBytes.right() - lastSerializedReadBytes);
       }
 
       long numOfTuples = this.numOfReadTupleMap.get(sourceVertexId).get();
 
-      StreamMetric streamMetric = new StreamMetric(this.timeSinceLastRecordStreamMetric, currentTimestamp, numOfTuples, serializedReadBytes);
+      StreamMetric streamMetric = new StreamMetric(this.timeSinceLastRecordStreamMetric, currentTimestamp, numOfTuples, serializedReadBytes.right(), serializedReadBytes.left());
       streamMetricMap.put(sourceVertexId, streamMetric);
       numOfReadTupleMap.get(sourceVertexId).addAndGet(-numOfTuples);
     }
