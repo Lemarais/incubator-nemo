@@ -119,6 +119,7 @@ public final class TaskExecutor {
                       final PersistentConnectionToMasterMap persistentConnectionToMasterMap,
                       final int streamMetricRecordPeriod,
                       final int latencyMarkPeriod) {
+    LOG.info(String.format("latency mark period %d", latencyMarkPeriod));
     // Essential information
     this.isExecuted = false;
     this.taskId = task.getTaskId();
@@ -490,6 +491,7 @@ public final class TaskExecutor {
         encodedReadBytes += ((MultiThreadParentTaskDataFetcher) dataFetcher).getEncodedBytes();
       }
     } else if (event instanceof Latencymark) {
+      LOG.info("get latencymark");
       LatencyMetric metric = new LatencyMetric((Latencymark) event, System.currentTimeMillis());
       metricMessageSender.send(TASK_METRIC_ID, taskId, "latencymark", SerializationUtils.serialize(metric));
       ((Latencymark) event).setLastTaskId(taskId);

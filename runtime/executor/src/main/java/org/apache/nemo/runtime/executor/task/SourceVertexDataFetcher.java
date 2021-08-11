@@ -24,6 +24,8 @@ import org.apache.nemo.common.ir.vertex.SourceVertex;
 import org.apache.nemo.common.punctuation.Finishmark;
 import org.apache.nemo.common.punctuation.Latencymark;
 import org.apache.nemo.common.punctuation.Watermark;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -33,6 +35,8 @@ import java.util.concurrent.TimeUnit;
  * Fetches data from a data source.
  */
 class SourceVertexDataFetcher extends DataFetcher {
+  private static final Logger LOG = LoggerFactory.getLogger(SourceVertexDataFetcher.class);
+
   private final Readable readable;
   private final String taskId;
   private long boundedSourceReadTime = 0;
@@ -122,6 +126,7 @@ class SourceVertexDataFetcher extends DataFetcher {
       if (isWatermarkTriggerTime()) {
         return new Watermark(readable.readWatermark());
       } else if (isLatencyMarkTriggered()) {
+        LOG.info("send latency mark");
         return new Latencymark(taskId, System.currentTimeMillis());
       }
     }
