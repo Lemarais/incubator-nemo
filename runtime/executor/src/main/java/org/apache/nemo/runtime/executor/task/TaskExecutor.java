@@ -491,7 +491,7 @@ public final class TaskExecutor {
       }
     } else if (event instanceof Latencymark) {
       LatencyMetric metric = new LatencyMetric((Latencymark) event, System.currentTimeMillis());
-      metricMessageSender.send(TASK_METRIC_ID, taskId, "latency", SerializationUtils.serialize(metric));
+      metricMessageSender.send(TASK_METRIC_ID, taskId, "latencymark", SerializationUtils.serialize(metric));
       ((Latencymark) event).setLastTaskId(taskId);
       processLatencymark(dataFetcher.getOutputCollector(), (Latencymark) event);
     } else if (event instanceof Watermark) {

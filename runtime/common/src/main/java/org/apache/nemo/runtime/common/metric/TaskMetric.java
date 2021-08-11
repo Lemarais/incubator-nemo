@@ -19,6 +19,7 @@
 package org.apache.nemo.runtime.common.metric;
 
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.nemo.common.punctuation.Latencymark;
 import org.apache.nemo.runtime.common.state.TaskState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,7 @@ public class TaskMetric implements StateMetric<TaskState.State> {
   private int scheduleAttempt = -1;
   private List<StateTransitionEvent<TaskState.State>> stateTransitionEvents = new ArrayList<>();
   private final Map<String, List<StreamMetric>> streamMetricMap = new HashMap<>();
-  private Map<String, List<LatencyMetric>> delay = new HashMap<>();
+  private Map<String, List<LatencyMetric>> latencymarks = new HashMap<>();
   private long taskDuration = -1;
   private long taskCPUTime = -1;
   private long schedulingOverhead = -1;
@@ -128,13 +129,13 @@ public class TaskMetric implements StateMetric<TaskState.State> {
   /**
    * Method related to delay.
    */
-  public final Map<String, List<LatencyMetric>> getDelay() {
-    return this.delay;
+  public final Map<String, List<LatencyMetric>> getLatencymarks() {
+    return this.latencymarks;
   }
 
-  private void setDelay(final LatencyMetric delayMetric) {
-    this.delay.putIfAbsent(delayMetric.getId(), new ArrayList<>());
-    this.delay.get(delayMetric.getId()).add(delayMetric);
+  private void addLatencymark(final LatencyMetric latencyMetric) {
+    this.latencymarks.putIfAbsent(latencyMetric.getLatencymark().getLastTaskId(), new ArrayList<>());
+    this.latencymarks.get(latencyMetric.getLatencymark().getLastTaskId()).add(latencyMetric);
   }
 
   /**
@@ -295,8 +296,8 @@ public class TaskMetric implements StateMetric<TaskState.State> {
       case "streamMetric":
         setStreamMetric(SerializationUtils.deserialize(metricValue));
         break;
-      case "delay":
-        setDelay(SerializationUtils.deserialize(metricValue));
+      case "latencymark":
+        addLatencymark(SerializationUtils.deserialize(metricValue));
         break;
       case "taskDuration":
         setTaskDuration(SerializationUtils.deserialize(metricValue));
