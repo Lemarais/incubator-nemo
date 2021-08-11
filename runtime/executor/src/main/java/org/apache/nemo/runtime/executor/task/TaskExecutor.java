@@ -163,7 +163,9 @@ public final class TaskExecutor {
 
       Pair<Boolean, Long> serializedReadBytes = Pair.of(false, -1L);
 
-      if (dataFetcher instanceof ParentTaskDataFetcher) {
+      if (dataFetcher instanceof SourceVertexDataFetcher) {
+        serializedReadBytes = Pair.of(true, 0L);
+      } else if (dataFetcher instanceof ParentTaskDataFetcher) {
         serializedReadBytes = ((ParentTaskDataFetcher) dataFetcher).getCurrSerBytes();
       } else if (dataFetcher instanceof MultiThreadParentTaskDataFetcher) {
         serializedReadBytes = ((MultiThreadParentTaskDataFetcher) dataFetcher).getCurrSerBytes();
