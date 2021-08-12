@@ -120,6 +120,7 @@ public final class TaskExecutor {
                       final int streamMetricRecordPeriod,
                       final int latencyMarkPeriod) {
     LOG.info(String.format("latency mark period %d", latencyMarkPeriod));
+
     // Essential information
     this.isExecuted = false;
     this.taskId = task.getTaskId();

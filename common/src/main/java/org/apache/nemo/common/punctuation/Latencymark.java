@@ -71,6 +71,7 @@ public final class Latencymark implements Serializable {
       && (lastTaskId.equals(latencymark.lastTaskId)));
   }
 
+
   @Override
   public String toString() {
     return String.valueOf("Latencymark(" + createdtaskId + ", " + timestamp + ")");
