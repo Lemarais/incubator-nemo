@@ -19,6 +19,7 @@
 package org.apache.nemo.runtime.common.metric;
 
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.nemo.common.punctuation.Watermark;
 import org.apache.nemo.runtime.common.state.TaskState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,7 @@ public class TaskMetric implements StateMetric<TaskState.State> {
   private List<StateTransitionEvent<TaskState.State>> stateTransitionEvents = new ArrayList<>();
   private final Map<String, List<StreamMetric>> streamMetrics = new HashMap<>();
   private Map<String, List<LatencyMetric>> latencymarks = new HashMap<>();
+  private Map<String, List<WatermarkMetric>> watermarks = new HashMap<>();
   private long taskDuration = -1;
   private long taskCPUTime = -1;
   private long schedulingOverhead = -1;
@@ -135,6 +137,15 @@ public class TaskMetric implements StateMetric<TaskState.State> {
   private void addLatencymark(final LatencyMetric latencyMetric) {
     this.latencymarks.putIfAbsent(latencyMetric.getLatencymark().getLastTaskId(), new ArrayList<>());
     this.latencymarks.get(latencyMetric.getLatencymark().getLastTaskId()).add(latencyMetric);
+  }
+
+  public final Map<String, List<WatermarkMetric>> getWatermarks() {
+    return this.watermarks;
+  }
+
+  private void addWatermark(final WatermarkMetric watermarkMetric) {
+    this.watermarks.putIfAbsent(watermarkMetric.getSourceVertexId(), new ArrayList<>());
+    this.watermarks.get(watermarkMetric.getSourceVertexId()).add(watermarkMetric);
   }
 
   /**
@@ -297,6 +308,9 @@ public class TaskMetric implements StateMetric<TaskState.State> {
         break;
       case "latencymark":
         addLatencymark(SerializationUtils.deserialize(metricValue));
+        break;
+      case "watermark":
+        addWatermark(SerializationUtils.deserialize(metricValue));
         break;
       case "taskDuration":
         setTaskDuration(SerializationUtils.deserialize(metricValue));

@@ -65,6 +65,7 @@ public final class Executor {
   private final String executorId;
   private final int streamMetricPeriod;
   private final int latencyMarkSendPeriod;
+  private final boolean recordWatermark;
 
   /**
    * To be used for a thread pool to execute tasks.
@@ -91,6 +92,7 @@ public final class Executor {
   private Executor(@Parameter(JobConf.ExecutorId.class) final String executorId,
                    @Parameter(JobConf.StreamMetricPeriod.class) final int streamMetricPeriod,
                    @Parameter(JobConf.LatencyMarkPeriod.class) final int latencyMarkSendPeriod,
+                   @Parameter(JobConf.RecordWatermark.class) final boolean recordWatermark,
                    final PersistentConnectionToMasterMap persistentConnectionToMasterMap,
                    final MessageEnvironment messageEnvironment,
                    final SerializerManager serializerManager,
@@ -100,6 +102,7 @@ public final class Executor {
     this.executorId = executorId;
     this.streamMetricPeriod = streamMetricPeriod;
     this.latencyMarkSendPeriod = latencyMarkSendPeriod;
+    this.recordWatermark = recordWatermark;
     this.executorService = Executors.newCachedThreadPool(new BasicThreadFactory.Builder()
       .namingPattern("TaskExecutor thread-%d")
       .build());
@@ -155,7 +158,7 @@ public final class Executor {
           e.getPropertyValue(DecompressionProperty.class).orElse(null))));
 
       new TaskExecutor(task, irDag, taskStateManager, intermediateDataIOFactory, broadcastManagerWorker,
-        metricMessageSender, persistentConnectionToMasterMap, streamMetricPeriod, latencyMarkSendPeriod).execute();
+        metricMessageSender, persistentConnectionToMasterMap, recordWatermark, streamMetricPeriod, latencyMarkSendPeriod).execute();
     } catch (final Exception e) {
       persistentConnectionToMasterMap.getMessageSender(MessageEnvironment.RUNTIME_MASTER_MESSAGE_LISTENER_ID).send(
         ControlMessage.Message.newBuilder()

@@ -42,6 +42,7 @@ import org.apache.nemo.runtime.common.message.MessageEnvironment;
 import org.apache.nemo.runtime.common.message.PersistentConnectionToMasterMap;
 import org.apache.nemo.runtime.common.metric.LatencyMetric;
 import org.apache.nemo.runtime.common.metric.StreamMetric;
+import org.apache.nemo.runtime.common.metric.WatermarkMetric;
 import org.apache.nemo.runtime.common.plan.RuntimeEdge;
 import org.apache.nemo.runtime.common.plan.StageEdge;
 import org.apache.nemo.runtime.common.plan.Task;
@@ -75,6 +76,7 @@ public final class TaskExecutor {
 
   // Essential information
   private boolean isExecuted;
+  private boolean recordWatermark;
   private final String taskId;
   private final TaskStateManager taskStateManager;
   private final List<DataFetcher> dataFetchers;
@@ -117,10 +119,12 @@ public final class TaskExecutor {
                       final BroadcastManagerWorker broadcastManagerWorker,
                       final MetricMessageSender metricMessageSender,
                       final PersistentConnectionToMasterMap persistentConnectionToMasterMap,
+                      final boolean recordWatermark,
                       final int streamMetricRecordPeriod,
                       final int latencyMarkPeriod) {
     // Essential information
     this.isExecuted = false;
+    this.recordWatermark = recordWatermark;
     this.taskId = task.getTaskId();
     this.taskStateManager = taskStateManager;
     this.broadcastManagerWorker = broadcastManagerWorker;
@@ -499,6 +503,10 @@ public final class TaskExecutor {
     } else if (event instanceof Watermark) {
       // Watermark
       processWatermark(dataFetcher.getOutputCollector(), (Watermark) event);
+      if (recordWatermark) {
+        WatermarkMetric metric = new WatermarkMetric(dataFetcher.getDataSource().getId(), (Watermark) event, System.currentTimeMillis());
+        metricMessageSender.send(TASK_METRIC_ID, taskId, "watermark", SerializationUtils.serialize(metric));
+      }
     } else {
       // Process data element
       processElement(dataFetcher.getOutputCollector(), event);

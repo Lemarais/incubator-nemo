@@ -84,6 +84,7 @@ public final class JobConf extends ConfigurationModuleBuilder {
   }
 
   ///////////////////////// DB Configurations
+
   /**
    * Specified whether or not to enable writing metrics to DB or not.
    */
@@ -251,6 +252,7 @@ public final class JobConf extends ConfigurationModuleBuilder {
   }
 
   ///////////////////////// Metric Configurations
+
   /**
    * Period how often stream metrics are recorded. the unit of period is millisecond.
    * -1 indicates that metrics are not recorded periodically.
@@ -267,6 +269,14 @@ public final class JobConf extends ConfigurationModuleBuilder {
   @NamedParameter(doc = "Period how often latencymarks are sent from source vertex. the unit of period is millisecond.",
     short_name = "latencymark_period", default_value = "-1")
   public final class LatencyMarkPeriod implements Name<Integer> {
+  }
+
+  /**
+   * Specified whether or not to enable recording watermarks at tasks or not.
+   */
+  @NamedParameter(doc = "Boolean flag for enabling record watermarks",
+    short_name = "record_watermark", default_value = "false")
+  public final class RecordWatermark implements Name<Boolean> {
   }
 
   //////////////////////////////// Runtime Data Plane Configurations
@@ -357,6 +367,7 @@ public final class JobConf extends ConfigurationModuleBuilder {
   public static final RequiredParameter<String> JOB_ID = new RequiredParameter<>();
   public static final OptionalParameter<Integer> STREAM_METRIC_PERIOD = new OptionalParameter<>();
   public static final OptionalParameter<Integer> LATENCYMARK_PERIOD = new OptionalParameter<>();
+  public static final OptionalParameter<Boolean> RECORD_WATERMARK = new OptionalParameter<>();
   public static final OptionalParameter<String> LOCAL_DISK_DIRECTORY = new OptionalParameter<>();
   public static final OptionalParameter<String> GLUSTER_DISK_DIRECTORY = new OptionalParameter<>();
 
@@ -367,5 +378,7 @@ public final class JobConf extends ConfigurationModuleBuilder {
     .bindNamedParameter(GlusterVolumeDirectory.class, GLUSTER_DISK_DIRECTORY)
     .bindNamedParameter(StreamMetricPeriod.class, STREAM_METRIC_PERIOD)
     .bindNamedParameter(LatencyMarkPeriod.class, LATENCYMARK_PERIOD)
+    .bindNamedParameter(RecordWatermark.class, RECORD_WATERMARK)
     .build();
+
 }
