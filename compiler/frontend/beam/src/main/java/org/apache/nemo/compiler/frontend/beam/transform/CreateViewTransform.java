@@ -25,6 +25,7 @@ import org.apache.beam.sdk.transforms.windowing.PaneInfo;
 import org.apache.beam.sdk.util.WindowedValue;
 import org.apache.beam.sdk.values.KV;
 import org.apache.nemo.common.ir.OutputCollector;
+import org.apache.nemo.common.ir.vertex.transform.LatencymarkEmitTransform;
 import org.apache.nemo.common.ir.vertex.transform.Transform;
 import org.apache.nemo.common.punctuation.Latencymark;
 import org.apache.nemo.common.punctuation.Watermark;
@@ -39,7 +40,7 @@ import java.util.*;
  * @param <I> input type
  * @param <O> materialized output type
  */
-public final class CreateViewTransform<I, O> implements Transform<WindowedValue<KV<?, I>>, WindowedValue<O>> {
+public final class CreateViewTransform<I, O> extends LatencymarkEmitTransform<WindowedValue<KV<?, I>>, WindowedValue<O>> {
   private final ViewFn<Materializations.MultimapView<Void, ?>, O> viewFn;
   private final Map<BoundedWindow, List<I>> windowListMap;
 
@@ -106,11 +107,6 @@ public final class CreateViewTransform<I, O> implements Transform<WindowedValue<
       currentOutputWatermark = minOutputTimestampOfEmittedWindows;
       outputCollector.emitWatermark(new Watermark(currentOutputWatermark));
     }
-  }
-
-  @Override
-  public void onLatencymark(final Latencymark latencymark) {
-    outputCollector.emitLatencymark(latencymark);
   }
 
   @Override

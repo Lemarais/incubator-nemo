@@ -19,6 +19,7 @@
 package org.apache.nemo.compiler.frontend.spark.transform;
 
 import org.apache.nemo.common.ir.OutputCollector;
+import org.apache.nemo.common.ir.vertex.transform.LatencymarkEmitTransform;
 import org.apache.nemo.common.ir.vertex.transform.Transform;
 import org.apache.nemo.common.punctuation.Latencymark;
 import org.apache.nemo.common.punctuation.Watermark;
@@ -30,7 +31,7 @@ import org.apache.spark.api.java.function.FlatMapFunction;
  * @param <T> input type.
  * @param <U> output type.
  */
-public final class FlatMapTransform<T, U> implements Transform<T, U> {
+public final class FlatMapTransform<T, U> extends LatencymarkEmitTransform<T, U> {
   private final FlatMapFunction<T, U> func;
   private OutputCollector<U> outputCollector;
 
@@ -60,11 +61,6 @@ public final class FlatMapTransform<T, U> implements Transform<T, U> {
   @Override
   public void onWatermark(final Watermark watermark) {
     outputCollector.emitWatermark(watermark);
-  }
-
-  @Override
-  public void onLatencymark(final Latencymark latencymark) {
-    outputCollector.emitLatencymark(latencymark);
   }
 
   @Override

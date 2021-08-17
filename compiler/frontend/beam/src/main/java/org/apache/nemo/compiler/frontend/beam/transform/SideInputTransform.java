@@ -20,6 +20,7 @@ package org.apache.nemo.compiler.frontend.beam.transform;
 
 import org.apache.beam.sdk.util.WindowedValue;
 import org.apache.nemo.common.ir.OutputCollector;
+import org.apache.nemo.common.ir.vertex.transform.LatencymarkEmitTransform;
 import org.apache.nemo.common.ir.vertex.transform.Transform;
 import org.apache.nemo.common.punctuation.Latencymark;
 import org.apache.nemo.common.punctuation.Watermark;
@@ -31,7 +32,7 @@ import org.apache.nemo.compiler.frontend.beam.SideInputElement;
  *
  * @param <T> input/output type.
  */
-public final class SideInputTransform<T> implements Transform<WindowedValue<T>, WindowedValue<SideInputElement<T>>> {
+public final class SideInputTransform<T> extends LatencymarkEmitTransform<WindowedValue<T>, WindowedValue<SideInputElement<T>>> {
   private OutputCollector<WindowedValue<SideInputElement<T>>> outputCollector;
   private final int index;
 
@@ -57,11 +58,6 @@ public final class SideInputTransform<T> implements Transform<WindowedValue<T>, 
   @Override
   public void onWatermark(final Watermark watermark) {
     outputCollector.emitWatermark(watermark);
-  }
-
-  @Override
-  public void onLatencymark(final Latencymark latencymark) {
-    outputCollector.emitLatencymark(latencymark);
   }
 
   @Override

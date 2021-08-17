@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @param <T> input/output type.
  */
-public final class StreamTransform<T> implements Transform<T, T> {
+public final class StreamTransform<T> extends LatencymarkEmitTransform<T, T> {
   private OutputCollector<T> outputCollector;
   private static final Logger LOG = LoggerFactory.getLogger(StreamTransform.class.getName());
 
@@ -54,11 +54,6 @@ public final class StreamTransform<T> implements Transform<T, T> {
   @Override
   public void onWatermark(final Watermark watermark) {
     outputCollector.emitWatermark(watermark);
-  }
-
-  @Override
-  public void onLatencymark(final Latencymark latencymark) {
-    outputCollector.emitLatencymark(latencymark);
   }
 
   @Override

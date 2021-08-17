@@ -25,6 +25,7 @@ import org.apache.beam.sdk.transforms.windowing.PaneInfo;
 import org.apache.beam.sdk.transforms.windowing.WindowFn;
 import org.apache.beam.sdk.util.WindowedValue;
 import org.apache.nemo.common.ir.OutputCollector;
+import org.apache.nemo.common.ir.vertex.transform.LatencymarkEmitTransform;
 import org.apache.nemo.common.ir.vertex.transform.Transform;
 import org.apache.nemo.common.punctuation.Latencymark;
 import org.apache.nemo.common.punctuation.Watermark;
@@ -41,7 +42,7 @@ import java.util.Collection;
  * @param <W> window type
  */
 public final class WindowFnTransform<T, W extends BoundedWindow>
-  implements Transform<WindowedValue<T>, WindowedValue<T>> {
+  extends LatencymarkEmitTransform<WindowedValue<T>, WindowedValue<T>> {
   private final WindowFn windowFn;
   private final DisplayData displayData;
   private OutputCollector<WindowedValue<T>> outputCollector;
@@ -99,11 +100,6 @@ public final class WindowFnTransform<T, W extends BoundedWindow>
   @Override
   public void onWatermark(final Watermark watermark) {
     outputCollector.emitWatermark(watermark);
-  }
-
-  @Override
-  public void onLatencymark(final Latencymark latencymark) {
-    outputCollector.emitLatencymark(latencymark);
   }
 
   @Override
