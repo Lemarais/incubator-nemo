@@ -90,7 +90,7 @@ public final class WindowedWordCountSimple {
       // unbounded
       return p.apply(GenerateSequence
         .from(1)
-        .withRate(2, Duration.standardSeconds(1))
+        .withRate(3000, Duration.standardSeconds(1))
         .withTimestampFn(num -> new Instant(num * 500))) // 0.5 second between subsequent elements
         .apply(MapElements.via(new SimpleFunction<Long, KV<String, Long>>() {
           @Override
