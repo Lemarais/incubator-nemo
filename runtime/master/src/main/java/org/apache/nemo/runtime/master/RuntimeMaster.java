@@ -285,6 +285,14 @@ public final class RuntimeMaster {
     speculativeTaskCloningThread.shutdown();
 
     try {
+      Thread.sleep(3000);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
+    flushMetrics();
+
+    try {
       // wait for metric flush
       if (!metricCountDownLatch.await(METRIC_ARRIVE_TIMEOUT, TimeUnit.MILLISECONDS)) {
         LOG.warn("Terminating master before all executor terminated messages arrived.");
