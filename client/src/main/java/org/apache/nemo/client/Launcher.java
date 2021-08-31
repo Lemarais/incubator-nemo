@@ -212,6 +212,8 @@ public abstract class Launcher {
     cl.registerShortNameOfClass(JobConf.ExecutorJSONPath.class);
     cl.registerShortNameOfClass(JobConf.BandwidthJSONPath.class);
     cl.registerShortNameOfClass(JobConf.NodeSpecJsonPath.class);
+    cl.registerShortNameOfClass(JobConf.StreamMetricPeriod.class);
+    cl.registerShortNameOfClass(JobConf.LatencyMarkPeriod.class);
     cl.registerShortNameOfClass(JobConf.JVMHeapSlack.class);
     cl.registerShortNameOfClass(JobConf.IORequestHandleThreadsTotal.class);
     cl.registerShortNameOfClass(JobConf.MaxTaskAttempt.class);
