@@ -28,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class manages virtual nodes and data transfer size between tasks.
@@ -92,6 +93,14 @@ final class ContainerManageSimulator {
       throw new JsonParseException(e);
     }
   }
+
+  public List<Pair<String, Map<String, Long>>> flushMetric() {
+    return nodeSimulatorMap.values().stream()
+      .map(NodeSimulator::flushMetric)
+      .flatMap(Collection::stream)
+      .collect(Collectors.toList());
+  }
+
 
   /**
    * allocated executor to virtual node.

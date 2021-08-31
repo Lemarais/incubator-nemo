@@ -144,6 +144,10 @@ public final class NodeSimulator {
     return allocated;
   }
 
+  public List<Pair<String, Map<String, Long>>> flushMetric() {
+    return taskMap.values().stream().map(TaskHarness::flushMetric).collect(Collectors.toList());
+  }
+
   /**
    * Class for simulating node.
    * This class manages resource distribution for each tasks.
@@ -166,6 +170,8 @@ public final class NodeSimulator {
     // srcVertexId of stage edge to writer
     private final Map<String, WriteSimulator> writerMap;
 
+    private final Map<String, Long> consumedTuples;
+
     TaskHarness(final Task task) {
       this.task = task;
       this.allocatedCPU = 0;
@@ -173,6 +179,7 @@ public final class NodeSimulator {
       this.cpuUtilization = 0;
       this.dataFetcherMap = new HashMap<>();
       this.writerMap = new HashMap<>();
+      this.consumedTuples = new HashMap<>();
     }
 
     /**
@@ -187,7 +194,8 @@ public final class NodeSimulator {
           // Source vertex DataFetcher
           String vertexId = irVertex.getId();
           dataFetcherMap.put(Pair.of(vertexId, vertexId),
-            new DataFetchSimulator(Collections.singletonList(nodeName), true));
+            new DataFetchSimulator(Collections.singletonList(nodeName), vertexId, true));
+          consumedTuples.put(vertexId, 0L);
         }
 
         // Set Data Fetcher of incoming edge
@@ -201,7 +209,8 @@ public final class NodeSimulator {
               String srcVertexId = stageEdge.getSrcIRVertex().getId();
               String dstVertexId = irVertex.getId();
 
-              dataFetcherMap.put(Pair.of(dstVertexId, srcVertexId), new DataFetchSimulator(nodeNames, false));
+              dataFetcherMap.put(Pair.of(dstVertexId, srcVertexId), new DataFetchSimulator(nodeNames, srcVertexId, false));
+              consumedTuples.put(srcVertexId, 0L);
             }
           });
 
@@ -285,6 +294,12 @@ public final class NodeSimulator {
         .sum();
     }
 
+    public Pair<String, Map<String, Long>> flushMetric() {
+      Map<String, Long> beforeConsumedTuples = new HashMap<>(consumedTuples);
+      consumedTuples.replaceAll((k, v) -> 0L);
+      return Pair.of(task.getTaskId(), beforeConsumedTuples);
+    }
+
     /**
      * calculates the number of tuples that are processed for duration.
      * Consumes the number of processed tuples and returns the number of tuples to transfer to downstream task.
@@ -327,8 +342,17 @@ public final class NodeSimulator {
       double consumeRate = (double) numOfprocessedTuple / totalNumOfTupelsToProcess;
 
       // consume tuples from data fetcher.
-      long finalNumOfprocessedTuple = dataFetcherMap.values().stream()
+      List<Pair<String, Long>> NumOfprocessedTuples = dataFetcherMap.values().stream()
         .map(dataFetcher -> dataFetcher.consume(consumeRate))
+        .collect(Collectors.toList());
+
+      for (Pair<String, Long> pair : NumOfprocessedTuples) {
+        long beforeNumOfConsumedTuples = consumedTuples.get(pair.left());
+        consumedTuples.put(pair.left(), beforeNumOfConsumedTuples + pair.right());
+      }
+
+      long finalNumOfprocessedTuple = NumOfprocessedTuples.stream()
+        .map(Pair::right)
         .flatMapToLong(LongStream::of)
         .sum();
 
@@ -443,9 +467,11 @@ public final class NodeSimulator {
    */
   private class DataFetchSimulator {
     private final boolean isSource;
+    private final String vertexId;
     private final Map<String, Long> numOfTuplesToProcess;
 
-    DataFetchSimulator(final List<String> nodeNames, final boolean isSource) {
+    DataFetchSimulator(final List<String> nodeNames, final String vertexId, final boolean isSource) {
+      this.vertexId = vertexId;
       this.numOfTuplesToProcess = new HashMap<>();
       this.isSource = isSource;
       for (String srcNodeName : nodeNames) {
@@ -537,7 +563,7 @@ public final class NodeSimulator {
      * @param consumeRate consume rate to consume tuples.
      * @return the number of the tuples that are processed.
      */
-    public long consume(final double consumeRate) {
+    public Pair<String, Long> consume(final double consumeRate) {
       long numOfConsumedTuples = 0;
       for (String srcNodeName : numOfTuplesToProcess.keySet()) {
         long beforeNumOfTuples = numOfTuplesToProcess.get(srcNodeName);
@@ -545,7 +571,7 @@ public final class NodeSimulator {
         numOfTuplesToProcess.put(srcNodeName, beforeNumOfTuples - numOfProcessedTuples);
         numOfConsumedTuples += numOfProcessedTuples;
       }
-      return numOfConsumedTuples;
+      return Pair.of(vertexId, numOfConsumedTuples);
     }
   }
 }
