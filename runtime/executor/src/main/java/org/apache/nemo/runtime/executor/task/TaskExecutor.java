@@ -115,6 +115,7 @@ public final class TaskExecutor {
                       final MetricMessageSender metricMessageSender,
                       final PersistentConnectionToMasterMap persistentConnectionToMasterMap,
                       final int latencyMarkPeriod) {
+    LOG.info(String.valueOf(latencyMarkPeriod));
     // Essential information
     this.isExecuted = false;
     this.taskId = task.getTaskId();
