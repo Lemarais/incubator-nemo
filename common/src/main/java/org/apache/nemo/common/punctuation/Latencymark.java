@@ -26,44 +26,48 @@ import java.util.Objects;
  * It is created only from source vertex and record the timestamp when it is created and taskId where it is created.
  */
 public final class Latencymark implements Serializable {
-  private final String createdtaskId;
-  private String lastTaskId;
-  private final long timestamp;
+  private final String createdTaskId;
+  private String previousTaskId;
+  private long previousSentTimestamp;
+  private final long createdTimestamp;
 
   /**
    * @param taskId task id where it is created
    * @param timestamp timestamp when it is created
    */
   public Latencymark(final String taskId, final long timestamp) {
-    this.createdtaskId = taskId;
-    this.timestamp = timestamp;
-    this.lastTaskId = "";
+    this.createdTaskId = taskId;
+    this.createdTimestamp = timestamp;
+    this.previousTaskId = "";
   }
 
   /**
    * @return the latencymark timestamp
    */
-  public long getTimestamp() {
-    return timestamp;
+  public long getCreatedTimestamp() {
+    return createdTimestamp;
   }
 
   /**
    * @return the task id where it is created
    */
-  public String getCreatedtaskId() {
-    return createdtaskId;
+  public String getCreatedTaskId() {
+    return createdTaskId;
   }
-
 
   /**
-   * @return the task id where it is delivered from. task id of upstream task
+   * @return the task id of previous task
    */
-  public String getLastTaskId() {
-    return lastTaskId;
+  public String getPreviousTaskId() {
+    return previousTaskId;
   }
 
-  public void setLastTaskId(final String currTaskId) {
-    lastTaskId = currTaskId;
+  public void setPreviousTaskId(final String currTaskId) {
+    previousTaskId = currTaskId;
+  }
+
+  public void setPreviousSentTimestamp(final long timestamp) {
+    previousSentTimestamp = timestamp;
   }
 
   @Override
@@ -75,19 +79,19 @@ public final class Latencymark implements Serializable {
       return false;
     }
     final Latencymark latencymark = (Latencymark) o;
-    return (timestamp == latencymark.timestamp)
-      && (createdtaskId.equals(latencymark.createdtaskId)
-      && (lastTaskId.equals(latencymark.lastTaskId)));
+    return (createdTimestamp == latencymark.createdTimestamp)
+      && (createdTaskId.equals(latencymark.createdTaskId)
+      && (previousTaskId.equals(latencymark.previousTaskId)));
   }
 
 
   @Override
   public String toString() {
-    return "Latencymark(" + createdtaskId + ", " + timestamp + ")";
+    return "Latencymark(" + createdTaskId + ", " + createdTimestamp + ")";
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(timestamp);
+    return Objects.hash(createdTimestamp);
   }
 }
