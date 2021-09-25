@@ -487,6 +487,7 @@ public final class TaskExecutor {
         encodedReadBytes += ((MultiThreadParentTaskDataFetcher) dataFetcher).getEncodedBytes();
       }
     } else if (event instanceof Latencymark) {
+      LOG.info("receive latencymark");
       Latencymark latencymark = (Latencymark) event;
       long currTimestamp = System.currentTimeMillis();
 
@@ -495,15 +496,16 @@ public final class TaskExecutor {
       metricMessageSender.send(TASK_METRIC_ID, taskId, "latencymark", SerializationUtils.serialize(metric));
 
       long latestSentTimestamp = latestSentLatencymarkTimestamp.getOrDefault(latencymark.getCreatedTaskId(), -1L);
+      LOG.info(String.valueOf(latestSentTimestamp));
       if (latestSentTimestamp < latencymark.getCreatedTimestamp()) {
         latestSentLatencymarkTimestamp.put(latencymark.getCreatedTaskId(), latencymark.getCreatedTimestamp());
 
         // set previousTaskId and timestamp of latencymark for next task.
-        ((Latencymark) event).setPreviousTaskId(taskId);
-        ((Latencymark) event).setPreviousSentTimestamp(currTimestamp);
+        latencymark.setPreviousTaskId(taskId);
+        latencymark.setPreviousSentTimestamp(currTimestamp);
 
         // process latencymark for downstream tasks
-        processLatencymark(dataFetcher.getOutputCollector(), (Latencymark) event);
+        processLatencymark(dataFetcher.getOutputCollector(), latencymark);
       }
     } else if (event instanceof Watermark) {
       // Watermark
