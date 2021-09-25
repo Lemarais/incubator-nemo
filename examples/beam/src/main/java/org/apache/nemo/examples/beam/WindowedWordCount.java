@@ -63,7 +63,7 @@ public final class WindowedWordCount {
           public void processElement(@Element final String elem,
                                      final OutputReceiver<String> out) {
             final String[] splitt = elem.split(SPLITTER);
-            out.outputWithTimestamp(splitt[0], new Instant(Long.valueOf(splitt[1])));
+            out.outputWithTimestamp(splitt[0], Instant.ofEpochMilli(System.currentTimeMillis()));
           }
         }))
         .apply(MapElements.<String, KV<String, Long>>via(new SimpleFunction<String, KV<String, Long>>() {
